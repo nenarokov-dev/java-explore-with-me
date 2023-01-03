@@ -3,16 +3,12 @@ package ru.practicum.explorewithme.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.dto.user.UserDto;
+import ru.practicum.explorewithme.model.user.dto.UserDto;
 import ru.practicum.explorewithme.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TODO Sprint add-controllers.

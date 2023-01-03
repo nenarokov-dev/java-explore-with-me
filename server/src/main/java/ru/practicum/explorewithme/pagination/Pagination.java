@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class Pagination<T> {
 
-    public List<T> setPagination(Integer from, Integer size, List<T> itemRequests) {
+    public List<T> setPagination(Integer from, Integer size, List<T> collection) {
         if (size != null && size <= 0) {
             String message = "Размер страницы должен быть больше нуля.";
             log.error(message);
@@ -25,13 +25,13 @@ public class Pagination<T> {
         }
         if (from == null) {
             if (size != null) {
-                return itemRequests.stream().limit(size).collect(Collectors.toList());
+                return collection.stream().limit(size).collect(Collectors.toList());
             } else
-                return itemRequests;
+                return collection;
         }
-        if (from > itemRequests.size()) {
+        if (from > collection.size()) {
             return Collections.emptyList();
         } else
-            return itemRequests.stream().skip(from).limit(size).collect(Collectors.toList());
+            return collection.stream().skip(from).limit(size).collect(Collectors.toList());
     }
 }

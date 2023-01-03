@@ -3,10 +3,11 @@ package ru.practicum.explorewithme.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.explorewithme.component.BeanFinder;
 import ru.practicum.explorewithme.exceptions.NotFoundException;
-import ru.practicum.explorewithme.model.User;
-import ru.practicum.explorewithme.model.dto.user.UserDto;
-import ru.practicum.explorewithme.model.mapper.UserMapper;
+import ru.practicum.explorewithme.model.user.User;
+import ru.practicum.explorewithme.model.user.dto.UserDto;
+import ru.practicum.explorewithme.model.user.mapper.UserMapper;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.UserRepository;
 
@@ -30,46 +31,34 @@ public class UserService {
     }
 
     public UserDto get(Long userId) {
-        if (userStorage.findById(userId).isPresent()) {
-            User user = userStorage.findById(userId).get();
-            log.info("Пользователь id={} успешно получен.", userId);
-            return UserMapper.toUserDto(user);
-        } else {
-            String message = "Пользователь с id=" + userId + " не найден.";
-            log.warn(message);
-            throw new NotFoundException(message);
-        }
+        User user = BeanFinder.findUserById(userId, userStorage);
+        log.info("Пользователь id={} успешно получен.", userId);
+        return UserMapper.toUserDto(user);
     }
 
-    public List<UserDto> getAll(String[] ids,Integer from, Integer size) {
+    public List<UserDto> getAll(String[] ids, Integer from, Integer size) {
         Long[] parsedIds = Arrays.stream(ids).map(Long::parseLong).toArray(Long[]::new);
         List<UserDto> users = userStorage.findAllWhereIdIn(parsedIds)
                 .stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
         log.info("Список пользователей успешно получен.");
-        return pagination.setPagination(from,size,users);
+        return pagination.setPagination(from, size, users);
     }
 
     public UserDto update(UserDto userForUpdate, Long userId) {
-        log.info(userForUpdate.toString());
         userForUpdate.setId(userId);
-        if (userStorage.findById(userId).isPresent()) {
-            User user = userStorage.getReferenceById(userId);
-            if (userForUpdate.getEmail() != null) {
-                user.setEmail(userForUpdate.getEmail());
-            }
-            if (userForUpdate.getName() != null) {
-                user.setName(userForUpdate.getName());
-            }
-            log.info("Пользователь id={} успешно обновлен.", userForUpdate.getId());
-            User savedUser = userStorage.save(user);
-            return UserMapper.toUserDto(savedUser);
-        } else {
-            String message = "Пользователь с id=" + userId + " не найден.";
-            log.warn(message);
-            throw new NotFoundException(message);
+        BeanFinder.findUserById(userId, userStorage);
+        User user = userStorage.getReferenceById(userId);
+        if (userForUpdate.getEmail() != null) {
+            user.setEmail(userForUpdate.getEmail());
         }
+        if (userForUpdate.getName() != null) {
+            user.setName(userForUpdate.getName());
+        }
+        log.info("Пользователь id={} успешно обновлен.", userForUpdate.getId());
+        User savedUser = userStorage.save(user);
+        return UserMapper.toUserDto(savedUser);
     }
 
     public void delete(Long userId) {

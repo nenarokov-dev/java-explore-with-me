@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <modules>
         <module>server</module>
+        <module>stats</module>
     </modules>
 
     <parent>
