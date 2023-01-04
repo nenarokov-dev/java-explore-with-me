@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-
 @Component
 @AllArgsConstructor
 public class StatsStorage {
@@ -38,7 +37,7 @@ public class StatsStorage {
             ps.setTimestamp(4, Timestamp.valueOf(endpointHit.getTimestamp()));
             return ps;
         }, keyHolder);
-        HashMap<Object,Object> ff = new HashMap<>(Objects.requireNonNull(keyHolder.getKeys()));
+        HashMap<Object, Object> ff = new HashMap<>(Objects.requireNonNull(keyHolder.getKeys()));
         endpointHit.setId((Long) ff.get("id"));
         return endpointHit;
     }
@@ -52,7 +51,7 @@ public class StatsStorage {
                                 "FROM endpoint_hits as eh " +
                                 "WHERE eh.uri LIKE '" + uri + "' " +
                                 "AND eh.time_stamp BETWEEN '" + start.format(formatter) + "' " +
-                                "AND '" + end.format(formatter)+ "' " +
+                                "AND '" + end.format(formatter) + "' " +
                                 "GROUP by eh.app,eh.uri;"
                         , new ViewStatsMapper()));
             }
@@ -63,7 +62,7 @@ public class StatsStorage {
                                 "FROM endpoint_hits as eh " +
                                 "WHERE eh.uri LIKE '" + uri + "' " +
                                 "AND eh.time_stamp BETWEEN '" + start.format(formatter) + "' " +
-                                "AND '" + end.format(formatter)+ "' " +
+                                "AND '" + end.format(formatter) + "' " +
                                 "GROUP by eh.app,eh.uri;"
                         , new ViewStatsMapper()));
             }

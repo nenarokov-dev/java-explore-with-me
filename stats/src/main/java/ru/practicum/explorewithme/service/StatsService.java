@@ -22,16 +22,16 @@ public class StatsService {
 
     public String saveHit(EndpointHit endpointHit) {
         EndpointHit hit = statsStorage.save(endpointHit);
-        log.info("Запрос к сервису {} через uri={} был успешно сохранен.",hit.getApp(),hit.getUri());
+        log.info("Запрос к сервису {} через uri={} был успешно сохранен.", hit.getApp(), hit.getUri());
         return "Информация сохранена.";
     }
 
     public List<ViewStats> getAllViews(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
         String[] urisDecoded = Arrays.stream(uris)
-                .map(e-> URLDecoder.decode(e, StandardCharsets.UTF_8))
+                .map(e -> URLDecoder.decode(e, StandardCharsets.UTF_8))
                 .toArray(String[]::new);
-        List<ViewStats> stats = statsStorage.getAllViews(start,end,urisDecoded,unique);
-        log.info("Статистика по сервисам {} успешно составлена.",Arrays.toString(uris));
+        List<ViewStats> stats = statsStorage.getAllViews(start, end, urisDecoded, unique);
+        log.info("Статистика по сервисам {} успешно составлена.", Arrays.toString(uris));
         return stats;
     }
     //private final Pagination<UserDto> pagination;
