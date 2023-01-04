@@ -52,8 +52,8 @@ public class StatsStorage {
                                 "WHERE eh.uri LIKE '" + uri + "' " +
                                 "AND eh.time_stamp BETWEEN '" + start.format(formatter) + "' " +
                                 "AND '" + end.format(formatter) + "' " +
-                                "GROUP by eh.app,eh.uri;"
-                        , new ViewStatsMapper()));
+                                "GROUP by eh.app,eh.uri;",
+                        new ViewStatsMapper()));
             }
         } else {
             for (String uri : uris) {
@@ -63,8 +63,8 @@ public class StatsStorage {
                                 "WHERE eh.uri LIKE '" + uri + "' " +
                                 "AND eh.time_stamp BETWEEN '" + start.format(formatter) + "' " +
                                 "AND '" + end.format(formatter) + "' " +
-                                "GROUP by eh.app,eh.uri;"
-                        , new ViewStatsMapper()));
+                                "GROUP by eh.app,eh.uri;",
+                        new ViewStatsMapper()));
             }
         }
         return stats;
