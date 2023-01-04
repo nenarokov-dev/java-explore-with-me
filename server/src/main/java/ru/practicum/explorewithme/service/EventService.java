@@ -37,10 +37,10 @@ public class EventService {
     private final Pagination<Event> pagination;
 
     public EventOutputDto add(EventDto eventDto, Long userId) {
-        User user = BeanFinder.findUserById(userId,userRepository);
-        EventCategory category = BeanFinder.findEventCategoryById(eventDto.getCategory(),categoriesRepository);
+        User user = BeanFinder.findUserById(userId, userRepository);
+        EventCategory category = BeanFinder.findEventCategoryById(eventDto.getCategory(), categoriesRepository);
         Location location = eventLocationRepository.save(LocationMapper.toLocationFromDto(eventDto.getLocation()));
-        Event newEvent = EventMapper.toEventFromEventDto(eventDto, category, location,user);
+        Event newEvent = EventMapper.toEventFromEventDto(eventDto, category, location, user);
         newEvent.setLocation(location);
         Event event = eventRepository.save(newEvent);
         log.info("Событие id={} успешно сохранено.", event.getId());
@@ -48,15 +48,15 @@ public class EventService {
     }
 
     public EventOutputDto getById(Long userId, Long eventId) {
-        User user = BeanFinder.findUserById(userId,userRepository);
+        User user = BeanFinder.findUserById(userId, userRepository);
         Event event = eventRepository.getReferenceById(eventId);
         log.info("Событие id={} успешно получено.", eventId);
         return EventMapper.toEventOutputDtoFromEvent(event, null, null);
     }
 
-    public EventOutputDto update(EventDto eventDto,Long userId) {
-        User user = BeanFinder.findUserById(userId,userRepository);
-        BeanFinder.findEventById(eventDto.getId(),eventRepository);
+    public EventOutputDto update(EventDto eventDto, Long userId) {
+        User user = BeanFinder.findUserById(userId, userRepository);
+        BeanFinder.findEventById(eventDto.getId(), eventRepository);
         Event event = eventRepository.getReferenceById(eventDto.getId());
         if (event.getState() == EventState.PUBLISHED) {
             String message = "Only pending or canceled events can be changed";
@@ -70,7 +70,7 @@ public class EventService {
             event.setAnnotation(eventDto.getAnnotation());
         }
         if (eventDto.getCategory() != null) {
-            EventCategory eventCategory = BeanFinder.findEventCategoryById(eventDto.getCategory(),categoriesRepository);
+            EventCategory eventCategory = BeanFinder.findEventCategoryById(eventDto.getCategory(), categoriesRepository);
             event.setCategory(eventCategory);
         }
         if (eventDto.getDescription() != null) {
@@ -81,7 +81,7 @@ public class EventService {
         }
         event.setPaid(eventDto.isPaid());
         event.setParticipantLimit(eventDto.getParticipantLimit());
-        if (eventDto.getTitle()!=null){
+        if (eventDto.getTitle() != null) {
             event.setTitle(eventDto.getTitle());
         }
         Event eventAfterUpdate = eventRepository.save(event);

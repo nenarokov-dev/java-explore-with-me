@@ -21,22 +21,22 @@ public class BaseClient {
     }
 
     protected ResponseEntity<Object> get(String path, Long userId, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path,userId, parameters, null);
+        return makeAndSendRequest(HttpMethod.GET, path, userId, parameters, null);
     }
 
     protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path,null, parameters, null);
+        return makeAndSendRequest(HttpMethod.GET, path, null, parameters, null);
     }
 
-    protected <T> ResponseEntity<Object> post(String path,Long userId, @Nullable Map<String, Object> parameters, T body) {
-        return makeAndSendRequest(HttpMethod.POST, path,userId, parameters, body);
+    protected <T> ResponseEntity<Object> post(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
+        return makeAndSendRequest(HttpMethod.POST, path, userId, parameters, body);
     }
 
-    protected <T> ResponseEntity<Object> post(String path,T body) {
-        return makeAndSendRequest(HttpMethod.POST, path, null,null, body);
+    protected <T> ResponseEntity<Object> post(String path, T body) {
+        return makeAndSendRequest(HttpMethod.POST, path, null, null, body);
     }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path,Long userId,
+    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, Long userId,
                                                           @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders(userId));
         ResponseEntity<Object> exploreWithMeStatsServerResponse;

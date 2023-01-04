@@ -23,7 +23,7 @@ public class EventStatsClient extends BaseClient {
     }
 
     public ResponseEntity<Object> hit(EndpointHit hit) {
-        return post("/hit",hit);
+        return post("/hit", hit);
     }
 
     public ResponseEntity<Object> getStats(String start, String end, String[] uris, Boolean unique) {
@@ -33,11 +33,11 @@ public class EventStatsClient extends BaseClient {
                 "unique", unique
         );
         StringBuilder stringBuilder = new StringBuilder();
-        if (uris.length>0){
+        if (uris.length > 0) {
             for (String s : uris) {
                 stringBuilder.append("uris=").append(s).append("&");
             }
         }
-        return get("/stats?"+stringBuilder+"start={start}&end={end}&unique={unique}",null,parameters);
+        return get("/stats?" + stringBuilder + "start={start}&end={end}&unique={unique}", null, parameters);
     }
 }

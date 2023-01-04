@@ -17,7 +17,7 @@ import ru.practicum.explorewithme.repository.*;
 @Slf4j
 public class BeanFinder {
 
-    public static User findUserById(Long userId,UserRepository userRepository) {
+    public static User findUserById(Long userId, UserRepository userRepository) {
         if (userRepository.findById(userId).isEmpty()) {
             String message = String.format("Не удалось найти пользователя с id=%d.", userId);
             log.warn(message);
@@ -26,7 +26,7 @@ public class BeanFinder {
             return userRepository.findById(userId).get();
     }
 
-    public static EventCategory findEventCategoryById(Long categoryId,CategoriesRepository categoriesRepository) {
+    public static EventCategory findEventCategoryById(Long categoryId, CategoriesRepository categoriesRepository) {
         if (categoriesRepository.findById(categoryId).isEmpty()) {
             String message = String.format("Не удалось найти категорию событий с id=%d.", categoryId);
             log.warn(message);
@@ -44,7 +44,7 @@ public class BeanFinder {
             return eventLocationRepository.findById(locationId).get();
     }
 
-    public static Event findEventById(Long eventId,EventRepository eventRepository) {
+    public static Event findEventById(Long eventId, EventRepository eventRepository) {
         if (eventRepository.findById(eventId).isEmpty()) {
             String message = String.format("Не удалось найти событиe с id=%d.", eventId);
             log.warn(message);
@@ -62,9 +62,9 @@ public class BeanFinder {
             return requestRepository.findById(requestId).get();
     }
 
-    public static EventCompilation findEventsCompilationById(Long compId,CompilationRepository compilationRepository){
-        if (compilationRepository.findById(compId).isEmpty()){
-            String message = String.format("Не удалось найти подборку событий с id=%d.",compId);
+    public static EventCompilation findEventsCompilationById(Long compId, CompilationRepository compilationRepository) {
+        if (compilationRepository.findById(compId).isEmpty()) {
+            String message = String.format("Не удалось найти подборку событий с id=%d.", compId);
             log.warn(message);
             throw new NotFoundException(message);
         } else {

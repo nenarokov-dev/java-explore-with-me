@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS
     event_locations,
     locations,
-    event_compilation_storage,
+    compilations_events,
     compilations,
     requests,
     events,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS compilations
     title  VARCHAR(2000)                           NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS event_compilation_storage
+CREATE TABLE IF NOT EXISTS compilations_events
 (
     compilation_id BIGINT NOT NULL references compilations on delete cascade,
     event_id       BIGINT NOT NULL references events on delete cascade,

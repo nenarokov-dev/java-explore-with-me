@@ -28,23 +28,23 @@ public class EventCompilationService {
     private final Pagination<EventCompilation> pagination;
 
     public EventCompilation add(EventCompilationDto eventCompilationDto) {
-        List<Event> events = eventRepository.findEventsByIdIsIn(eventCompilationDto.getEvents());
+        Set<Event> events = eventRepository.findEventsByIdIsIn(eventCompilationDto.getEvents());
         EventCompilation compilation =
-                compilationRepository.save(CompilationMapper.fromEventCompilationDto(eventCompilationDto,events));
+                compilationRepository.save(CompilationMapper.fromEventCompilationDto(eventCompilationDto, events));
         log.info("Подборка событий id={} успешно добавлена.", compilation.getId());
         return compilation;
     }
 
     public EventCompilation getById(Long compId) {
-        EventCompilation compilation = BeanFinder.findEventsCompilationById(compId,compilationRepository);
+        EventCompilation compilation = BeanFinder.findEventsCompilationById(compId, compilationRepository);
         log.info("Подборка событий id={} успешно получена.", compId);
         return compilation;
     }
 
-    public List<EventCompilation> getAll(Integer from,Integer size,Boolean pinned) {
+    public List<EventCompilation> getAll(Integer from, Integer size, Boolean pinned) {
         List<EventCompilation> compilations;
-        if (pinned!=null) {
-            if (pinned){
+        if (pinned != null) {
+            if (pinned) {
                 compilations = compilationRepository.findAllByPinnedIs(true);
             } else {
                 compilations = compilationRepository.findAllByPinnedIs(false);
@@ -53,7 +53,7 @@ public class EventCompilationService {
             compilations = compilationRepository.findAll();
         }
         log.info("Подборки событий успешно получены.");
-        return pagination.setPagination(from,size,compilations);
+        return pagination.setPagination(from, size, compilations);
     }
 
     public void deleteById(Long compId) {
@@ -61,24 +61,24 @@ public class EventCompilationService {
         log.info("Подборка событий id={} успешно удолена.", compId);
     }
 
-    public EventCompilation addOtherEventToCompilation(Long compId,Long eventId) {
-        BeanFinder.findEventsCompilationById(compId,compilationRepository);
-        Event event = BeanFinder.findEventById(eventId,eventRepository);
+    public EventCompilation addOtherEventToCompilation(Long compId, Long eventId) {
+        BeanFinder.findEventsCompilationById(compId, compilationRepository);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
         compilation.getEvents().add(event);
-        EventCompilation updatedCompilation =  compilationRepository.save(compilation);
-        log.info("Новое событие id={} было успешно добавлено в подборку событий id={}.", eventId,compId);
+        EventCompilation updatedCompilation = compilationRepository.save(compilation);
+        log.info("Новое событие id={} было успешно добавлено в подборку событий id={}.", eventId, compId);
         return updatedCompilation;
     }
 
-    public EventCompilation removeEventFromCompilation(Long compId,Long eventId) {
+    public EventCompilation removeEventFromCompilation(Long compId, Long eventId) {
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
-        Event event = BeanFinder.findEventById(eventId,eventRepository);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         Set<Event> events = compilation.getEvents();
         events.remove(event);
         compilation.setEvents(events);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);
-        log.info("Событие id={} было успешно удалено из подборки событий id={}.", eventId,compId);
+        log.info("Событие id={} было успешно удалено из подборки событий id={}.", eventId, compId);
         return updatedCompilation;
     }
 
@@ -86,7 +86,7 @@ public class EventCompilationService {
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
         Boolean pinned = compilation.getPinned();
         compilation.setPinned(!pinned);
-        EventCompilation updatedCompilation =  compilationRepository.save(compilation);
+        EventCompilation updatedCompilation = compilationRepository.save(compilation);
         if (pinned) {
             log.info("Подборка событий id={} откреплена с главной страницы.", compId);
         } else {

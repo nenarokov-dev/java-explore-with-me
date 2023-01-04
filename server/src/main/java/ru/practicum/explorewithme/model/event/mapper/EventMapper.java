@@ -35,13 +35,13 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventOutputDto toEventOutputDtoFromEvent(Event event,Long views, Long confirmedRequests) {
+    public static EventOutputDto toEventOutputDtoFromEvent(Event event, Long views, Long confirmedRequests) {
         return EventOutputDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
                 .annotation(event.getAnnotation())
                 .description(event.getDescription())
-                .category(new CategoryDto(event.getCategory().getId(),event.getCategory().getName()))
+                .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
                 .eventDate(convertDateTimeToString(event.getEventDate()))
                 .location(LocationMapper.toLocationDto(event.getLocation()))
                 .paid(event.isPaid())
@@ -63,7 +63,7 @@ public class EventMapper {
                 .id(event.getId())
                 .title(event.getTitle())
                 .annotation(event.getAnnotation())
-                .category(new CategoryDto(event.getCategory().getId(),event.getCategory().getName()))
+                .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
                 .eventDate(convertDateTimeToString(event.getEventDate()))
                 .paid(event.isPaid())
                 .initiator(userShortDto)
@@ -73,8 +73,8 @@ public class EventMapper {
                 .build();
     }
 
-    private static String convertDateTimeToString(LocalDateTime dateTime){
-        if (dateTime!=null) {
+    private static String convertDateTimeToString(LocalDateTime dateTime) {
+        if (dateTime != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             return dateTime.format(formatter);
         } else return null;

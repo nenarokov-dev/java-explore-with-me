@@ -42,7 +42,7 @@ public class EventCategoryService {
     public EventCategory getById(Long id) {
         isCategoryExist(id);
         EventCategory category = categoriesRepository.getReferenceById(id);
-        log.info("Категорий событий id={} успешно получена.",id);
+        log.info("Категорий событий id={} успешно получена.", id);
         return category;
     }
 
