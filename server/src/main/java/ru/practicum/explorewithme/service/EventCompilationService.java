@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
-import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.event.compilation.dto.EventCompilationDto;
@@ -15,7 +14,6 @@ import ru.practicum.explorewithme.repository.EventRepository;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

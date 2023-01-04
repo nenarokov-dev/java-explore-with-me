@@ -3,14 +3,9 @@ package ru.practicum.explorewithme.controller.request;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.request.Request;
 import ru.practicum.explorewithme.model.request.dto.RequestDto;
-import ru.practicum.explorewithme.model.user.dto.UserDto;
 import ru.practicum.explorewithme.service.RequestService;
-import ru.practicum.explorewithme.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 
 /**

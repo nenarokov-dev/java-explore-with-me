@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.explorewithme.model.event.Event;
 
-import java.util.List;
 import java.util.Set;
 
 @Repository

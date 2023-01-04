@@ -5,11 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.event.category.dto.CategoryDto;
-import ru.practicum.explorewithme.model.event.location.Location;
 import ru.practicum.explorewithme.model.event.location.dto.LocationDto;
 import ru.practicum.explorewithme.model.user.dto.UserShortDto;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

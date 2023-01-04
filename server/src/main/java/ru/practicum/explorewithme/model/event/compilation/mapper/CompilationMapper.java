@@ -5,7 +5,6 @@ import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.event.compilation.dto.EventCompilationDto;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

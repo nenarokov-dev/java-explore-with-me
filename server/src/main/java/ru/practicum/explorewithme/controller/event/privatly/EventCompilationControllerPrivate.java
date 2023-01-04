@@ -3,15 +3,11 @@ package ru.practicum.explorewithme.controller.event.privatly;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.event.compilation.EventCompilation;
-import ru.practicum.explorewithme.model.event.compilation.dto.EventCompilationDto;
 import ru.practicum.explorewithme.model.event.dto.EventDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputDto;
-import ru.practicum.explorewithme.service.EventCompilationService;
 import ru.practicum.explorewithme.service.EventService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @AllArgsConstructor
 @RestController

@@ -5,23 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
 import ru.practicum.explorewithme.exceptions.BadRequestException;
-import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.event.category.EventCategory;
-import ru.practicum.explorewithme.model.event.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.event.dto.EventDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputDto;
 import ru.practicum.explorewithme.model.event.location.Location;
 import ru.practicum.explorewithme.model.event.location.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.event.mapper.EventMapper;
 import ru.practicum.explorewithme.model.user.User;
-import ru.practicum.explorewithme.model.user.mapper.UserMapper;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

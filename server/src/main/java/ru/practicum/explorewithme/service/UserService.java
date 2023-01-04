@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
-import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.model.user.dto.UserDto;
 import ru.practicum.explorewithme.model.user.mapper.UserMapper;

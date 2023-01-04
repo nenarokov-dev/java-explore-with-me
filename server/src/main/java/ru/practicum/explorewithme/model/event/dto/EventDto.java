@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.explorewithme.annotation.IsTimeLaterThenValue;
-import ru.practicum.explorewithme.model.event.location.Location;
 import ru.practicum.explorewithme.model.event.location.dto.LocationDto;
 
 import javax.validation.constraints.NotNull;

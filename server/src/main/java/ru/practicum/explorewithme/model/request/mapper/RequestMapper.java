@@ -2,8 +2,6 @@ package ru.practicum.explorewithme.model.request.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.explorewithme.model.event.Event;
-import ru.practicum.explorewithme.model.event.location.Location;
-import ru.practicum.explorewithme.model.event.location.dto.LocationDto;
 import ru.practicum.explorewithme.model.request.Request;
 import ru.practicum.explorewithme.model.request.dto.RequestDto;
 import ru.practicum.explorewithme.model.user.User;

@@ -1,6 +1,8 @@
 package ru.practicum.explorewithme.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 

@@ -7,7 +7,6 @@ import ru.practicum.explorewithme.component.BeanFinder;
 import ru.practicum.explorewithme.exceptions.BadRequestException;
 import ru.practicum.explorewithme.exceptions.DuplicateException;
 import ru.practicum.explorewithme.exceptions.ForbiddenException;
-import ru.practicum.explorewithme.exceptions.NotFoundException;
 import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.request.Request;
@@ -16,13 +15,11 @@ import ru.practicum.explorewithme.model.request.dto.RequestDto;
 import ru.practicum.explorewithme.model.request.mapper.RequestMapper;
 import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.model.user.dto.UserDto;
-import ru.practicum.explorewithme.model.user.mapper.UserMapper;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.EventRepository;
 import ru.practicum.explorewithme.repository.RequestRepository;
 import ru.practicum.explorewithme.repository.UserRepository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
