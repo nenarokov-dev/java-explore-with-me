@@ -30,7 +30,7 @@ public class RequestControllerPrivate {
         return requestService.get(userId);
     }
 
-    @PatchMapping("/{userId}/requests/{requestId}/cansel")
+    @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public RequestDto cancel(@PathVariable Long userId, @PathVariable Long requestId) {
         return requestService.rejectByRequester(userId,requestId);
     }

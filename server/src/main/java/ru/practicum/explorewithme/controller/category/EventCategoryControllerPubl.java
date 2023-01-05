@@ -1,8 +1,8 @@
-package ru.practicum.explorewithme.controller.event.category;
+package ru.practicum.explorewithme.controller.category;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.event.category.EventCategory;
+import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.service.EventCategoryService;
 
 import java.util.List;

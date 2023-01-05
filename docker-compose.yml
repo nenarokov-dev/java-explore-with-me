@@ -1,15 +1,48 @@
 version: '3.1'
 services:
   stats-server:
+    build: stats
+    image: stats-image
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/stats
+      - DB_NAME=stats
+      - POSTGRES_DB=stats
+      - POSTGRES_USER=stats
+      - POSTGRES_PASSWORD=stats
 
   stats-db:
     image: postgres:14-alpine
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=stats
+      - POSTGRES_USER=stats
+      - POSTGRES_PASSWORD=stats
 
   ewm-service:
+    build: server
+    image: ewm-image
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/explorewithme
+      - DB_NAME = explorewithme
+      - POSTGRES_DB=explorewithme
+      - POSTGRES_USER=explorewithme
+      - POSTGRES_PASSWORD=explorewithme
 
   ewm-db:
     image: postgres:14-alpine
+
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=explorewithme
+      - POSTGRES_USER=explorewithme
+      - POSTGRES_PASSWORD=explorewithme

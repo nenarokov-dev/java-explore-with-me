@@ -34,8 +34,6 @@ public class RequestService {
 
     private RequestRepository requestRepository;
 
-    private final Pagination<UserDto> pagination;
-
     public RequestDto add(Long userId, Long eventId) {
         if (requestRepository.findByRequesterIdAndEventId(userId, eventId) != null) {
             String message = "Пользователь id=" + userId + " уже отправил запрос на участие в событии id=" + eventId + ".";
@@ -88,7 +86,7 @@ public class RequestService {
             log.warn(message);
             throw new BadRequestException(message);
         }
-        request.setStatus(RequestStatus.REJECTED);
+        request.setStatus(RequestStatus.CANCELED);
         Request canceledRequest = requestRepository.save(request);
         log.info("Запрос на участие в событии id={} успешно добавлен.", canceledRequest.getId());
         return RequestMapper.toRequestDto(canceledRequest);
@@ -140,7 +138,7 @@ public class RequestService {
                     .findRequestsIdByStatusAndEventId(RequestStatus.PENDING, eventId);
             for (Long requestId : unconfirmedRequestsId) {
                 Request requestForCancel = requestRepository.getReferenceById(requestId);
-                requestForCancel.setStatus(RequestStatus.REJECTED);
+                requestForCancel.setStatus(RequestStatus.CANCELED);
                 requestRepository.save(requestForCancel);
             }
         }
@@ -157,7 +155,8 @@ public class RequestService {
             throw new BadRequestException(message);
         }
         Request request = requestRepository.getReferenceById(reqId);
-        if (request.getStatus().equals(RequestStatus.REJECTED)) {
+        if (request.getStatus().equals(RequestStatus.REJECTED) ||
+                request.getStatus().equals(RequestStatus.CANCELED)) {
             String message = "Заявка на участие в событии уже отклонена.";
             log.warn(message);
             throw new BadRequestException(message);

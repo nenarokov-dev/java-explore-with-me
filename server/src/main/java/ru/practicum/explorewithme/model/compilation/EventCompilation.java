@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.model.event.compilation;
+package ru.practicum.explorewithme.model.compilation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

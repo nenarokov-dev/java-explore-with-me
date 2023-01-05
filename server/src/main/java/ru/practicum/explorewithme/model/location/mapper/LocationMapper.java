@@ -1,8 +1,8 @@
-package ru.practicum.explorewithme.model.event.location.mapper;
+package ru.practicum.explorewithme.model.location.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.explorewithme.model.event.location.Location;
-import ru.practicum.explorewithme.model.event.location.dto.LocationDto;
+import ru.practicum.explorewithme.model.location.Location;
+import ru.practicum.explorewithme.model.location.dto.LocationDto;
 
 
 @Component

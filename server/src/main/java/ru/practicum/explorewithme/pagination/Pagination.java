@@ -2,7 +2,7 @@ package ru.practicum.explorewithme.pagination;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.explorewithme.exceptions.RequestParamException;
+import ru.practicum.explorewithme.exceptions.BadRequestException;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,12 +16,12 @@ public class Pagination<T> {
         if (size != null && size <= 0) {
             String message = "Размер страницы должен быть больше нуля.";
             log.error(message);
-            throw new RequestParamException(message);
+            throw new BadRequestException(message);
         }
         if (from != null && from < 0) {
             String message = "Индекс первого элемента страницы не может быть меньше нуля.";
             log.error(message);
-            throw new RequestParamException(message);
+            throw new BadRequestException(message);
         }
         if (from == null) {
             if (size != null) {

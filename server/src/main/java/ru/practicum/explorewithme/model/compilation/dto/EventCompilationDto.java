@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.model.event.compilation.dto;
+package ru.practicum.explorewithme.model.compilation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

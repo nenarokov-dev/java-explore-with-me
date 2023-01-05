@@ -2,13 +2,14 @@ package ru.practicum.explorewithme.model.event.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.explorewithme.model.event.Event;
-import ru.practicum.explorewithme.model.event.category.EventCategory;
-import ru.practicum.explorewithme.model.event.category.dto.CategoryDto;
+import ru.practicum.explorewithme.model.category.EventCategory;
+import ru.practicum.explorewithme.model.category.dto.CategoryDto;
+import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.event.dto.EventDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
-import ru.practicum.explorewithme.model.event.location.Location;
-import ru.practicum.explorewithme.model.event.location.mapper.LocationMapper;
+import ru.practicum.explorewithme.model.location.Location;
+import ru.practicum.explorewithme.model.location.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.model.user.dto.UserShortDto;
 import ru.practicum.explorewithme.model.user.mapper.UserMapper;
@@ -28,14 +29,17 @@ public class EventMapper {
                 .category(category)
                 .eventDate(eventDto.getEventDate())
                 .location(location)
-                .paid(eventDto.isPaid())
+                .paid(eventDto.getPaid())
                 .participantLimit(eventDto.getParticipantLimit())
                 .requestModeration(eventDto.getRequestModeration())
+                .state(EventState.PENDING)
+                .confirmedRequests(0L)
+                .views(0L)
                 .initiator(user)
                 .build();
     }
 
-    public static EventOutputDto toEventOutputDtoFromEvent(Event event, Long views, Long confirmedRequests) {
+    public static EventOutputDto toEventOutputDtoFromEvent(Event event) {
         return EventOutputDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -50,15 +54,13 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
-                .views(views)
-                .confirmedRequests(confirmedRequests)
+                .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(convertDateTimeToString(event.getCreated()))
+                .views(event.getViews())
                 .build();
     }
 
-    public static EventOutputShortDto toEventOutputShortDtoFromEvent(Event event, Long views,
-                                                                     UserShortDto userShortDto,
-                                                                     Long confirmedRequests) {
+    public static EventOutputShortDto toEventOutputShortDto(Event event, Long views, UserShortDto userShortDto) {
         return EventOutputShortDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -68,7 +70,7 @@ public class EventMapper {
                 .paid(event.isPaid())
                 .initiator(userShortDto)
                 .views(views)
-                .confirmedRequests(confirmedRequests)
+                .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(convertDateTimeToString(event.getCreated()))
                 .build();
     }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.exceptions.NotFoundException;
-import ru.practicum.explorewithme.model.event.category.EventCategory;
+import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.CategoriesRepository;
 

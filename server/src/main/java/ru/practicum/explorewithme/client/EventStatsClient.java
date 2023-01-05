@@ -40,4 +40,6 @@ public class EventStatsClient extends BaseClient {
         }
         return get("/stats?" + stringBuilder + "start={start}&end={end}&unique={unique}", null, parameters);
     }
+
+
 }

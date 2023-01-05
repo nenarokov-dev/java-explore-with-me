@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.explorewithme.model.event.category.EventCategory;
-import ru.practicum.explorewithme.model.event.location.Location;
+import ru.practicum.explorewithme.model.category.EventCategory;
+import ru.practicum.explorewithme.model.location.Location;
 import ru.practicum.explorewithme.model.user.User;
 
 import javax.persistence.*;

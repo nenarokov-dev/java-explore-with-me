@@ -1,9 +1,9 @@
-package ru.practicum.explorewithme.controller.event.category.admin;
+package ru.practicum.explorewithme.controller.category.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.event.category.EventCategory;
+import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.service.EventCategoryService;
 
 import javax.validation.Valid;
