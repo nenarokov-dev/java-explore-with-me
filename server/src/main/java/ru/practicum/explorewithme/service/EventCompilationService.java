@@ -80,7 +80,7 @@ public class EventCompilationService {
         BeanFinder.findEventsCompilationById(compId, compilationRepository);
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
         Event event = BeanFinder.findEventById(eventId, eventRepository);
-        Set<Event> events = compilation.getEvents();
+        List<Event> events = compilation.getEvents();
         events.remove(event);
         compilation.setEvents(events);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);
