@@ -29,7 +29,6 @@ public class EventCategoryService {
     }
 
     public CategoryDto patch(CategoryDto eventCategory) {
-        System.out.println(eventCategory);
         Long id = eventCategory.getId();
         if (id == null) {
             String message = "Идентификатор категории должен быть передан в теле запроса.";

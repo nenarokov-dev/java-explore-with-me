@@ -7,8 +7,8 @@ import ru.practicum.explorewithme.model.compilation.dto.EventCompilationOutputDt
 import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
 import ru.practicum.explorewithme.model.event.mapper.EventMapper;
-import ru.practicum.explorewithme.model.user.mapper.UserMapper;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,10 +35,9 @@ public class CompilationMapper {
     }
 
     public static EventCompilationOutputDto toEventCompilationOutputDto(EventCompilation compilation) {
-        Set<EventOutputShortDto> events = compilation.getEvents().stream()
-                .map(e -> EventMapper
-                        .toEventOutputShortDto(e, null, UserMapper.toUserShortDto(e.getInitiator())))
-                .collect(Collectors.toSet());
+        List<EventOutputShortDto> events = compilation.getEvents().stream()
+                .map(EventMapper::toEventOutputShortDto)
+                .collect(Collectors.toList());
         return EventCompilationOutputDto.builder()
                 .id(compilation.getId())
                 .events(events)

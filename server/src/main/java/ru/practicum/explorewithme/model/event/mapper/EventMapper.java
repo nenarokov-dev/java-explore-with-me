@@ -11,7 +11,6 @@ import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
 import ru.practicum.explorewithme.model.location.Location;
 import ru.practicum.explorewithme.model.location.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.user.User;
-import ru.practicum.explorewithme.model.user.dto.UserShortDto;
 import ru.practicum.explorewithme.model.user.mapper.UserMapper;
 
 import java.time.LocalDateTime;
@@ -60,7 +59,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventOutputShortDto toEventOutputShortDto(Event event, Long views, UserShortDto userShortDto) {
+    public static EventOutputShortDto toEventOutputShortDto(Event event) {
         return EventOutputShortDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -68,8 +67,8 @@ public class EventMapper {
                 .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
                 .eventDate(convertDateTimeToString(event.getEventDate()))
                 .paid(event.isPaid())
-                .initiator(userShortDto)
-                .views(views)
+                .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                .views(event.getViews())
                 .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(convertDateTimeToString(event.getCreated()))
                 .build();

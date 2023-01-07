@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,7 +13,7 @@ import java.util.Set;
 public class EventCompilationOutputDto {
 
     private Long id;
-    private Set<EventOutputShortDto> events;
+    private List<EventOutputShortDto> events;
     private Boolean pinned;
     private String title;
 }

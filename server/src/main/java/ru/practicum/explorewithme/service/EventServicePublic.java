@@ -12,7 +12,6 @@ import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.event.dto.EventOutputDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
 import ru.practicum.explorewithme.model.event.mapper.EventMapper;
-import ru.practicum.explorewithme.model.user.mapper.UserMapper;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.EventRepository;
 
@@ -103,7 +102,7 @@ public class EventServicePublic {
         System.out.println(5);
         System.out.println(events);
         List<EventOutputShortDto> filteredEvents = events.stream()
-                .map(e -> EventMapper.toEventOutputShortDto(e, 0L, UserMapper.toUserShortDto(e.getInitiator())))
+                .map(EventMapper::toEventOutputShortDto)
                 .collect(Collectors.toList());
         hit(request, "ewm-main-app");
         log.info("Отсортированный список событий успешно получен.");

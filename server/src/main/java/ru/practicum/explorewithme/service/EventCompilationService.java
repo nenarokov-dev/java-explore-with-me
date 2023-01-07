@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
-import ru.practicum.explorewithme.exceptions.ForbiddenException;
 import ru.practicum.explorewithme.model.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.compilation.dto.EventCompilationDto;
 import ru.practicum.explorewithme.model.compilation.dto.EventCompilationOutputDto;
@@ -68,14 +67,10 @@ public class EventCompilationService {
     public EventCompilationOutputDto addOtherEventToCompilation(Long compId, Long eventId) {
         BeanFinder.findEventsCompilationById(compId, compilationRepository);
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
-        boolean isAlreadyDefined = compilation.getEvents().stream().anyMatch(e -> e.getId().equals(eventId));
-        if (isAlreadyDefined) {
-            String message = "Не удалось добавить событие в подборку.Событие уже добавлено.";
-            log.warn(message);
-            throw new ForbiddenException(message);
-        }
         Event event = BeanFinder.findEventById(eventId, eventRepository);
+        System.out.println(compilation);
         compilation.getEvents().add(event);
+        System.out.println(compilation);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);
         log.info("Новое событие id={} было успешно добавлено в подборку событий id={}.", eventId, compId);
         return CompilationMapper.toEventCompilationOutputDto(updatedCompilation);
