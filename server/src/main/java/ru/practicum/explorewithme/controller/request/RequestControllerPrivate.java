@@ -22,36 +22,36 @@ public class RequestControllerPrivate {
 
     @PostMapping("/{userId}/requests")
     public RequestDto add(@PathVariable Long userId, @RequestParam Long eventId) {
-        return requestService.add(userId,eventId);
+        return requestService.add(userId, eventId);
     }
 
     @GetMapping("/{userId}/requests")
     public List<RequestDto> getAllByRequester(@PathVariable Long userId) {
-        return requestService.get(userId);
+        return requestService.getAll(userId);
     }
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public RequestDto cancel(@PathVariable Long userId, @PathVariable Long requestId) {
-        return requestService.rejectByRequester(userId,requestId);
+        return requestService.rejectByRequester(userId, requestId);
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")
     public List<RequestDto> getAllByInitiator(@PathVariable Long userId, @PathVariable Long eventId) {
-        return requestService.getAllByInitiator(userId,eventId);
+        return requestService.getAllByInitiator(userId, eventId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
     public RequestDto confirmByInitiator(@PathVariable Long userId,
                                          @PathVariable Long eventId,
                                          @PathVariable Long reqId) {
-        return requestService.confirmRequest(userId,eventId,reqId);
+        return requestService.confirmRequest(userId, eventId, reqId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
     public RequestDto rejectByInitiator(@PathVariable Long userId,
                                         @PathVariable Long eventId,
                                         @PathVariable Long reqId) {
-        return requestService.rejectRequestByEventInitiator(userId,eventId,reqId);
+        return requestService.rejectRequestByEventInitiator(userId, eventId, reqId);
     }
 
 

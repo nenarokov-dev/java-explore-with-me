@@ -15,8 +15,9 @@ public class EventCategoryControllerPubl {
     private final EventCategoryService eventCategoryService;
 
     @GetMapping
-    public List<EventCategory> getAll(@RequestParam Integer from, @RequestParam Integer size) {
-        return eventCategoryService.getAll(from,size);
+    public List<EventCategory> getAll(@RequestParam(required = false, defaultValue = "0") Integer from,
+                                      @RequestParam(required = false, defaultValue = "10") Integer size) {
+        return eventCategoryService.getAll(from, size);
     }
 
     @GetMapping("/{catId}")

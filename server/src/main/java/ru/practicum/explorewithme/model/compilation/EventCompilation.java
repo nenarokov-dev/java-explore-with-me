@@ -26,7 +26,6 @@ public class EventCompilation {
             joinColumns = {@JoinColumn(name = "event_id")},
             inverseJoinColumns = {@JoinColumn(name = "compilation_id")}
     )
-    //@ToString.Exclude
     private Set<Event> events;
     @Column(name = "pinned", nullable = false)
     private Boolean pinned;

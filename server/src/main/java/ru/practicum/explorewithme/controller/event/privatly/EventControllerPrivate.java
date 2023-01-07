@@ -21,29 +21,29 @@ public class EventControllerPrivate {
     @PostMapping("/{userId}/events")
     public EventOutputDto add(@RequestBody @Valid EventDto eventDto,
                               @PathVariable Long userId) {
-        return eventService.add(eventDto,userId);
+        return eventService.add(eventDto, userId);
     }
 
     @GetMapping("/{userId}/events")
     public List<EventOutputDto> getAll(@PathVariable Long userId,
-                                       @RequestParam Integer from,
-                                       @RequestParam Integer size) {
-        return eventService.getAllByInitiator(userId,from,size);
+                                       @RequestParam(required = false, defaultValue = "0") Integer from,
+                                       @RequestParam(required = false, defaultValue = "10") Integer size) {
+        return eventService.getAllByInitiator(userId, from, size);
     }
 
     @GetMapping("/{userId}/events/{eventId}")
-    public EventOutputDto getById(@PathVariable Long userId,@PathVariable Long eventId) {
-        return eventService.getById(userId,eventId);
+    public EventOutputDto getById(@PathVariable Long userId, @PathVariable Long eventId) {
+        return eventService.getById(userId, eventId);
     }
 
     @PatchMapping("/{userId}/events")
-    public EventOutputDto update(@RequestBody @Valid EventDto eventDto,@PathVariable Long userId) {
-        return eventService.update(eventDto,userId);
+    public EventOutputDto update(@RequestBody @Valid EventDto eventDto, @PathVariable Long userId) {
+        return eventService.update(eventDto, userId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    public EventOutputDto cancel(@PathVariable Long userId,@PathVariable Long eventId) {
-        return eventService.cancelEvent(userId,eventId);
+    public EventOutputDto cancel(@PathVariable Long userId, @PathVariable Long eventId) {
+        return eventService.cancelEvent(userId, eventId);
     }
 
 

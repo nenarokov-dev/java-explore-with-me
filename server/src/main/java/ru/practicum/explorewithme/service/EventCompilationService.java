@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
-import ru.practicum.explorewithme.model.compilation.dto.EventCompilationOutputDto;
-import ru.practicum.explorewithme.model.event.Event;
+import ru.practicum.explorewithme.exceptions.ForbiddenException;
 import ru.practicum.explorewithme.model.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.compilation.dto.EventCompilationDto;
+import ru.practicum.explorewithme.model.compilation.dto.EventCompilationOutputDto;
 import ru.practicum.explorewithme.model.compilation.mapper.CompilationMapper;
+import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.CompilationRepository;
 import ru.practicum.explorewithme.repository.EventRepository;
@@ -42,24 +43,21 @@ public class EventCompilationService {
     }
 
     public List<EventCompilationOutputDto> getAll(Integer from, Integer size, Boolean pinned) {
-        List<EventCompilationOutputDto> compilations;
+        List<EventCompilation> compilations;
         if (pinned != null) {
-            if (pinned) {
-                compilations = compilationRepository.findAllByPinnedIs(true).stream()
-                        .map(CompilationMapper::toEventCompilationOutputDto)
-                        .collect(Collectors.toList());
+            if (pinned.equals(true)) {
+                compilations = compilationRepository.findAllByPinnedIs(true);
             } else {
-                compilations = compilationRepository.findAllByPinnedIs(false).stream()
-                        .map(CompilationMapper::toEventCompilationOutputDto)
-                        .collect(Collectors.toList());
+                compilations = compilationRepository.findAllByPinnedIs(false);
             }
         } else {
-            compilations = compilationRepository.findAll().stream()
-                    .map(CompilationMapper::toEventCompilationOutputDto)
-                    .collect(Collectors.toList());
+            compilations = compilationRepository.findAll();
         }
+        List<EventCompilationOutputDto> compilationOutput = compilations.stream()
+                .map(CompilationMapper::toEventCompilationOutputDto)
+                .collect(Collectors.toList());
         log.info("Подборки событий успешно получены.");
-        return pagination.setPagination(from, size, compilations);
+        return pagination.setPagination(from, size, compilationOutput);
     }
 
     public void deleteById(Long compId) {
@@ -69,8 +67,14 @@ public class EventCompilationService {
 
     public EventCompilationOutputDto addOtherEventToCompilation(Long compId, Long eventId) {
         BeanFinder.findEventsCompilationById(compId, compilationRepository);
-        Event event = BeanFinder.findEventById(eventId, eventRepository);
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
+        boolean isAlreadyDefined = compilation.getEvents().stream().anyMatch(e -> e.getId().equals(eventId));
+        if (isAlreadyDefined) {
+            String message = "Не удалось добавить событие в подборку.Событие уже добавлено.";
+            log.warn(message);
+            throw new ForbiddenException(message);
+        }
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         compilation.getEvents().add(event);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);
         log.info("Новое событие id={} было успешно добавлено в подборку событий id={}.", eventId, compId);
@@ -78,6 +82,7 @@ public class EventCompilationService {
     }
 
     public EventCompilationOutputDto removeEventFromCompilation(Long compId, Long eventId) {
+        BeanFinder.findEventsCompilationById(compId, compilationRepository);
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
         Event event = BeanFinder.findEventById(eventId, eventRepository);
         Set<Event> events = compilation.getEvents();
@@ -89,6 +94,7 @@ public class EventCompilationService {
     }
 
     public EventCompilationOutputDto removeOrSetCompilationFromMainPage(Long compId) {
+        BeanFinder.findEventsCompilationById(compId, compilationRepository);
         EventCompilation compilation = compilationRepository.getReferenceById(compId);
         Boolean pinned = compilation.getPinned();
         compilation.setPinned(!pinned);

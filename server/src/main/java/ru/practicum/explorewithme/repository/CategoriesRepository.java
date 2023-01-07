@@ -7,4 +7,6 @@ import ru.practicum.explorewithme.model.category.EventCategory;
 @Repository
 public interface CategoriesRepository extends JpaRepository<EventCategory, Long> {
 
+    EventCategory findByName(String name);
+
 }

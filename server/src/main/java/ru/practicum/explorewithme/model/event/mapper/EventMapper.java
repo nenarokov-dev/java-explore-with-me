@@ -1,9 +1,9 @@
 package ru.practicum.explorewithme.model.event.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.model.category.dto.CategoryDto;
+import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.event.dto.EventDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputDto;

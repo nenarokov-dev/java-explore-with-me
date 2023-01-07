@@ -2,7 +2,6 @@ package ru.practicum.explorewithme.controller.compilation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.compilation.dto.EventCompilationOutputDto;
 import ru.practicum.explorewithme.service.EventCompilationService;
 

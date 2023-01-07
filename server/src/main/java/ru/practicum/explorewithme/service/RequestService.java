@@ -14,8 +14,6 @@ import ru.practicum.explorewithme.model.request.RequestStatus;
 import ru.practicum.explorewithme.model.request.dto.RequestDto;
 import ru.practicum.explorewithme.model.request.mapper.RequestMapper;
 import ru.practicum.explorewithme.model.user.User;
-import ru.practicum.explorewithme.model.user.dto.UserDto;
-import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.EventRepository;
 import ru.practicum.explorewithme.repository.RequestRepository;
 import ru.practicum.explorewithme.repository.UserRepository;
@@ -69,7 +67,7 @@ public class RequestService {
         return RequestMapper.toRequestDto(request);
     }
 
-    public List<RequestDto> get(Long userId) {
+    public List<RequestDto> getAll(Long userId) {
         List<RequestDto> requests = requestRepository.findAllByRequesterId(userId).stream()
                 .map(RequestMapper::toRequestDto)
                 .collect(Collectors.toList());

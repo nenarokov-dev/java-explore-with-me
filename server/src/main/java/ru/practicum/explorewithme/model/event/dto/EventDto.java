@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import ru.practicum.explorewithme.annotation.IsTimeLaterThenValue;
 import ru.practicum.explorewithme.model.location.dto.LocationDto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
@@ -23,9 +24,11 @@ public class EventDto {
     @Length(max = 2000, min = 20,
             message = "Краткое описание события не должно быть короче 20 символов," +
                     " и не должен быть длиннее 2000 символов.")
+    @NotBlank(message = "Аннотация события не должна быть пустой")
     private String annotation;
     @Length(max = 7000, min = 20,
             message = "Описание события не должно быть короче 20 символов, и не должно быть длиннее 7000 символов.")
+    @NotBlank(message = "Описание события не должно быть пустым.")
     private String description;
     @NotNull(message = "Событие должно относиться к какой-то категории.")
     @Positive(message = "Идентификатор категории должен быть больше нуля.")

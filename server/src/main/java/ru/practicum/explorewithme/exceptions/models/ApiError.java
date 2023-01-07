@@ -18,5 +18,5 @@ public class ApiError {
     private String reason;
     private String status;
     @Builder.Default
-    private String timestamp= LocalDateTime.now().format(DateTimeAdapter.formatter);
+    private String timestamp = LocalDateTime.now().format(DateTimeAdapter.formatter);
 }

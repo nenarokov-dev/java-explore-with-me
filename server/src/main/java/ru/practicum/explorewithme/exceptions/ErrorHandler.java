@@ -7,14 +7,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explorewithme.exceptions.models.ApiError;
-import ru.practicum.explorewithme.exceptions.models.ErrorMessage;
-import ru.practicum.explorewithme.exceptions.models.ErrorResponse;
-import ru.practicum.explorewithme.exceptions.models.Violation;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.sql.SQLException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -23,7 +19,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError onConstraintValidationException(ConstraintViolationException e) {
         StringBuilder reasons = new StringBuilder();
-        for (ConstraintViolation<?> fieldError:e.getConstraintViolations()) {
+        for (ConstraintViolation<?> fieldError : e.getConstraintViolations()) {
             reasons.append("Поле: ").append(fieldError.getPropertyPath()).append("\n")
                     .append("Реакция: ").append(fieldError.getMessage());
         }
@@ -38,7 +34,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         StringBuilder reasons = new StringBuilder();
-        for (FieldError fieldError:e.getBindingResult().getFieldErrors()) {
+        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             reasons.append("Поле: ").append(fieldError).append("\n")
                     .append("Реакция: ").append(fieldError.getDefaultMessage());
         }
@@ -76,6 +72,26 @@ public class ErrorHandler {
                 .message(e.getMessage())
                 .reason("Не соблюдены условия выполнения операции.")
                 .status(HttpStatus.FORBIDDEN.toString())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handle(final SQLException e) {
+        return ApiError.builder()
+                .message(e.getMessage())
+                .reason("Переданные в запросе данные конфликтуют с уже имеющимися.")
+                .status(HttpStatus.CONFLICT.toString())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handle(final DuplicateException e) {
+        return ApiError.builder()
+                .message(e.getMessage())
+                .reason("Переданные в запросе данные конфликтуют с уже имеющимися.")
+                .status(HttpStatus.CONFLICT.toString())
                 .build();
     }
 

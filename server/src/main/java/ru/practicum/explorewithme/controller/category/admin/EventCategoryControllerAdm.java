@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.model.category.EventCategory;
+import ru.practicum.explorewithme.model.category.dto.CategoryDto;
 import ru.practicum.explorewithme.service.EventCategoryService;
 
 import javax.validation.Valid;
@@ -21,12 +22,12 @@ public class EventCategoryControllerAdm {
     private final EventCategoryService eventCategoryService;
 
     @PostMapping
-    public EventCategory add(@RequestBody @Valid EventCategory category) {
+    public EventCategory add(@RequestBody @Valid CategoryDto category) {
         return eventCategoryService.add(category);
     }
 
     @PatchMapping()
-    public EventCategory update(@RequestBody EventCategory category) {
+    public CategoryDto update(@RequestBody CategoryDto category) {
         return eventCategoryService.patch(category);
     }
 

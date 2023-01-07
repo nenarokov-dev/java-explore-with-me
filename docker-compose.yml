@@ -8,14 +8,18 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/stats
+      - STATS_SERVER_URL=http://server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
       - DB_NAME=stats
       - POSTGRES_DB=stats
       - POSTGRES_USER=stats
       - POSTGRES_PASSWORD=stats
+      - DB_HOST=stats-db
+      - DB_PORT=6542
 
   stats-db:
     image: postgres:14-alpine
+    container_name: stats_db_container
     ports:
       - "6542:5432"
     environment:
@@ -23,23 +27,25 @@ services:
       - POSTGRES_USER=stats
       - POSTGRES_PASSWORD=stats
 
-  ewm-service:
+  ewm-server:
     build: server
-    image: ewm-image
+    image: server-image
     ports:
       - "8080:8080"
     depends_on:
-      - ewm-db
+      - explorewithme-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/explorewithme
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://explorewithme-db:5432/explorewithme
       - DB_NAME = explorewithme
       - POSTGRES_DB=explorewithme
       - POSTGRES_USER=explorewithme
       - POSTGRES_PASSWORD=explorewithme
+      - DB_HOST=explorewithme-db
+      - DB_PORT=6541
 
-  ewm-db:
+  explorewithme-db:
     image: postgres:14-alpine
-
+    container_name: explorewithme_db_container
     ports:
       - "6541:5432"
     environment:

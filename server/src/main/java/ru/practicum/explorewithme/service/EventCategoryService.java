@@ -3,8 +3,12 @@ package ru.practicum.explorewithme.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.explorewithme.exceptions.NotFoundException;
+import ru.practicum.explorewithme.component.BeanFinder;
+import ru.practicum.explorewithme.exceptions.BadRequestException;
+import ru.practicum.explorewithme.exceptions.DuplicateException;
 import ru.practicum.explorewithme.model.category.EventCategory;
+import ru.practicum.explorewithme.model.category.dto.CategoryDto;
+import ru.practicum.explorewithme.model.category.mapper.CategoriesMapper;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.CategoriesRepository;
 
@@ -18,19 +22,29 @@ public class EventCategoryService {
     private CategoriesRepository categoriesRepository;
     private final Pagination<EventCategory> pagination;
 
-    public EventCategory add(EventCategory eventCategory) {
-        EventCategory category = categoriesRepository.save(eventCategory);
+    public EventCategory add(CategoryDto eventCategory) {
+        EventCategory category = categoriesRepository.save(CategoriesMapper.toCategoryFromDto(eventCategory));
         log.info("Создана новая категория событий '{}', id={}", category.getName(), category.getId());
         return category;
     }
 
-    public EventCategory patch(EventCategory eventCategory) {
+    public CategoryDto patch(CategoryDto eventCategory) {
+        System.out.println(eventCategory);
         Long id = eventCategory.getId();
-        isCategoryExist(id);
+        if (id == null) {
+            String message = "Идентификатор категории должен быть передан в теле запроса.";
+            log.warn(message);
+            throw new BadRequestException(message);
+        }
         EventCategory category = categoriesRepository.getReferenceById(id);
+        if (categoriesRepository.findByName(eventCategory.getName()) != null) {
+            String message = "Нарушение уникальности категории события.";
+            log.warn(message);
+            throw new DuplicateException(message);
+        }
         category.setName(eventCategory.getName());
         log.info("Категория событий id={} успешно обновлена.", category.getId());
-        return category;
+        return CategoriesMapper.toCategoryDto(category);
     }
 
     public List<EventCategory> getAll(Integer from, Integer size) {
@@ -40,7 +54,7 @@ public class EventCategoryService {
     }
 
     public EventCategory getById(Long id) {
-        isCategoryExist(id);
+        BeanFinder.findEventCategoryById(id, categoriesRepository);
         EventCategory category = categoriesRepository.getReferenceById(id);
         log.info("Категорий событий id={} успешно получена.", id);
         return category;
@@ -49,13 +63,6 @@ public class EventCategoryService {
     public void delete(Long id) {
         categoriesRepository.deleteById(id);
         log.info("Категория событий id={} успешно удолена.", id);
-    }
-
-    private void isCategoryExist(Long id) {
-        if (categoriesRepository.findById(id).isEmpty()) {
-            log.warn("Категория событий с id={} не найдена.", id);
-            throw new NotFoundException("Категория событий с id=" + id + " не найдена.");
-        }
     }
 
 }
