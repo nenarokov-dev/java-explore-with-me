@@ -52,31 +52,23 @@ public class EventServicePublic {
         } else {
             events = eventRepository.findAllByStateOrderById(EventState.PUBLISHED);
         }
-        System.out.println(0);
-        System.out.println(events);
         if (!text.isEmpty()) {
             events = events.stream()
                     .filter(e -> (e.getAnnotation().toLowerCase()).contains(text.toLowerCase()) ||
                             (e.getDescription().toLowerCase()).contains(text.toLowerCase()))
                     .collect(Collectors.toList());
         }
-        System.out.println(1);
-        System.out.println(events);
         if (categories != null && categories.length != 0) {
             List<Long> categoriesId = Stream.of(categories).map(Long::valueOf).collect(Collectors.toList());
             events = events.stream()
                     .filter(e -> categoriesId.contains(e.getCategory().getId()))
                     .collect(Collectors.toList());
         }
-        System.out.println(2);
-        System.out.println(events);
         if (paid != null) {
             events = events.stream()
                     .filter(e -> paid.equals(e.isPaid()))
                     .collect(Collectors.toList());
         }
-        System.out.println(3);
-        System.out.println(events);
         if (rangeStart != null) {
             LocalDateTime start = LocalDateTime.parse(rangeStart, DateTimeAdapter.formatter);
             if (rangeEnd != null) {
@@ -91,16 +83,16 @@ public class EventServicePublic {
                         .filter(e -> e.getEventDate().isBefore(end))
                         .collect(Collectors.toList());
             }
+        } else {
+            events = events.stream()
+                    .filter(e -> e.getEventDate().isAfter(LocalDateTime.now()))
+                    .collect(Collectors.toList());
         }
-        System.out.println(4);
-        System.out.println(events);
         if (onlyAvailable != null && onlyAvailable.equals(true)) {
             events = events.stream()
                     .filter(e -> e.getConfirmedRequests() < e.getParticipantLimit())
                     .collect(Collectors.toList());
         }
-        System.out.println(5);
-        System.out.println(events);
         List<EventOutputShortDto> filteredEvents = events.stream()
                 .map(EventMapper::toEventOutputShortDto)
                 .collect(Collectors.toList());
