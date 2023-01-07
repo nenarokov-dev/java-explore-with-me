@@ -36,7 +36,7 @@ services:
       - explorewithme-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://explorewithme-db:5432/explorewithme
-      - DB_NAME = explorewithme
+      - DB_NAME=explorewithme
       - POSTGRES_DB=explorewithme
       - POSTGRES_USER=explorewithme
       - POSTGRES_PASSWORD=explorewithme
