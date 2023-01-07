@@ -12,9 +12,9 @@ import java.time.format.DateTimeFormatter;
 @JsonComponent
 public class DateTimeAdapter {
 
-    public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
         @Override
         public LocalDateTime deserialize(JsonParser jsonParser,

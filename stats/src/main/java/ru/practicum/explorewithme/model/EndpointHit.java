@@ -14,5 +14,5 @@ public class EndpointHit {
     private String app;
     private String uri;
     private String ip;
-    private final LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime timestamp;
 }

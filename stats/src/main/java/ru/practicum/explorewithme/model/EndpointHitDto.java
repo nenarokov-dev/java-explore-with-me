@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
-public class EndpointHit {
+public class EndpointHitDto {
     private Long id;
     private String app;
     private String uri;

@@ -96,7 +96,7 @@ public class EventServicePublic {
         List<EventOutputShortDto> filteredEvents = events.stream()
                 .map(EventMapper::toEventOutputShortDto)
                 .collect(Collectors.toList());
-        hit(request, "ewm-main-app");
+        hit(request);
         log.info("Отсортированный список событий успешно получен.");
         return paginationShort.setPagination(from, size, filteredEvents);
     }
@@ -109,17 +109,18 @@ public class EventServicePublic {
             throw new BadRequestException(message);
         }
         log.info("Событие id={} успешно получено.", eventId);
-        hit(request, "ewm-main-app");
+        hit(request);
         event.setViews(event.getViews() + 1);
         Event viewedEvent = eventRepository.save(event);
         return EventMapper.toEventOutputDtoFromEvent(viewedEvent);
     }
 
-    private void hit(HttpServletRequest request, String app) {
+    private void hit(HttpServletRequest request) {
         EndpointHit hit = EndpointHit.builder()
                 .uri(request.getRequestURI())
-                .app(app)
+                .app("ewm-main-app")
                 .ip(request.getRemoteAddr())
+                .timestamp(LocalDateTime.now().format(DateTimeAdapter.formatter))
                 .build();
         eventStatsClient.hit(hit);
         log.info("Запрос по адресу {} успешно отправлен.", request.getRequestURI());

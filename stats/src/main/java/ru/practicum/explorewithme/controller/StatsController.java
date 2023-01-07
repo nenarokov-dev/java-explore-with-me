@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.model.EndpointHit;
+import ru.practicum.explorewithme.model.EndpointHitDto;
 import ru.practicum.explorewithme.model.ViewStats;
 import ru.practicum.explorewithme.service.StatsService;
 
@@ -28,7 +29,7 @@ public class StatsController {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
     @PostMapping("/hit")
-    public String hit(@RequestBody @Valid EndpointHit hit) {
+    public EndpointHitDto hit(@RequestBody @Valid EndpointHitDto hit) {
         return statsService.saveHit(hit);
     }
 

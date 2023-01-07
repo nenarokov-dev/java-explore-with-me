@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.model.EndpointHit;
+import ru.practicum.explorewithme.model.EndpointHitDto;
+import ru.practicum.explorewithme.model.HitMapper;
 import ru.practicum.explorewithme.model.ViewStats;
 import ru.practicum.explorewithme.repository.StatsStorage;
 
@@ -20,10 +22,10 @@ public class StatsService {
 
     private final StatsStorage statsStorage;
 
-    public String saveHit(EndpointHit endpointHit) {
-        EndpointHit hit = statsStorage.save(endpointHit);
+    public EndpointHitDto saveHit(EndpointHitDto endpointHit) {
+        EndpointHit hit = statsStorage.save(HitMapper.toEndpointHit(endpointHit));
         log.info("Запрос к сервису {} через uri={} был успешно сохранен.", hit.getApp(), hit.getUri());
-        return "Информация сохранена.";
+        return HitMapper.toEndpointHitDto(hit);
     }
 
     public List<ViewStats> getAllViews(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
