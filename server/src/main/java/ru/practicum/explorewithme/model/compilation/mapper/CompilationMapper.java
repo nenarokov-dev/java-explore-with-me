@@ -25,7 +25,7 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static EventCompilation fromEventCompilationDto(EventCompilationDto compilationDto, Set<Event> events) {
+    public static EventCompilation fromEventCompilationDto(EventCompilationDto compilationDto, List<Event> events) {
         return EventCompilation.builder()
                 .id(compilationDto.getId())
                 .events(events)

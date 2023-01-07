@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.model.event.Event;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,7 +26,7 @@ public class EventCompilation {
             joinColumns = {@JoinColumn(name = "compilation_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
-    private Set<Event> events;
+    private List<Event> events;
     @Column(name = "pinned", nullable = false)
     private Boolean pinned;
     @Column(name = "title", nullable = false)

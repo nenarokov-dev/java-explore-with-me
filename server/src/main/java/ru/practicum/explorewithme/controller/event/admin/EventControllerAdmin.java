@@ -29,8 +29,8 @@ public class EventControllerAdmin {
                                        @RequestParam(required = false) Integer[] categories,
                                        @RequestParam(required = false) String rangeStart,
                                        @RequestParam(required = false) String rangeEnd,
-                                       @RequestParam(defaultValue = "0") Integer from,
-                                       @RequestParam(defaultValue = "10") Integer size) {
+                                       @RequestParam(defaultValue = "0", required = false) Integer from,
+                                       @RequestParam(defaultValue = "10", required = false) Integer size) {
         return eventService.getAll(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

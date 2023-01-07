@@ -28,7 +28,7 @@ public class EventCompilationService {
     private final Pagination<EventCompilationOutputDto> pagination;
 
     public EventCompilationOutputDto add(EventCompilationDto eventCompilationDto) {
-        Set<Event> events = eventRepository.findEventsByIdIsIn(eventCompilationDto.getEvents());
+        List<Event> events = eventRepository.findEventsByIdIsIn(eventCompilationDto.getEvents());
         EventCompilation compilation =
                 compilationRepository.save(CompilationMapper.fromEventCompilationDto(eventCompilationDto, events));
         log.info("Подборка событий id={} успешно добавлена.", compilation.getId());

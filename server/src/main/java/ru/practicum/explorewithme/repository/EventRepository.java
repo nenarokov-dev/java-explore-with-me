@@ -12,7 +12,7 @@ import java.util.Set;
 public interface EventRepository extends JpaRepository<Event, Long> {
 
 
-    Set<Event> findEventsByIdIsIn(Set<Long> id);
+    List<Event> findEventsByIdIsIn(Set<Long> id);
 
     List<Event> findAllByInitiatorId(Long id);
 
