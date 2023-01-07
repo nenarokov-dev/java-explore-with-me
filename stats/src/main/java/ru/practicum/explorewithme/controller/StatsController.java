@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.model.EndpointHit;
 import ru.practicum.explorewithme.model.EndpointHitDto;
 import ru.practicum.explorewithme.model.ViewStats;
 import ru.practicum.explorewithme.service.StatsService;
@@ -38,7 +37,7 @@ public class StatsController {
                                     @RequestParam String end,
                                     @RequestParam String[] uris,
                                     @RequestParam(defaultValue = "false") Boolean unique) {
-        return statsService.getAllViews(LocalDateTime.parse(start,formatter), LocalDateTime.parse(end,formatter), uris, unique);
+        return statsService.getAllViews(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter), uris, unique);
     }
 
 }
