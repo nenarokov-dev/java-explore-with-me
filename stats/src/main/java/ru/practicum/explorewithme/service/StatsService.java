@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.explorewithme.component.DateTimeAdapter;
 import ru.practicum.explorewithme.model.EndpointHit;
 import ru.practicum.explorewithme.model.EndpointHitDto;
 import ru.practicum.explorewithme.model.HitMapper;
@@ -28,11 +29,12 @@ public class StatsService {
         return HitMapper.toEndpointHitDto(hit);
     }
 
-    public List<ViewStats> getAllViews(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
+    public List<ViewStats> getAllViews(String start, String end, String[] uris, Boolean unique) {
         String[] urisDecoded = Arrays.stream(uris)
                 .map(e -> URLDecoder.decode(e, StandardCharsets.UTF_8))
                 .toArray(String[]::new);
-        List<ViewStats> stats = statsStorage.getAllViews(start, end, urisDecoded, unique);
+        List<ViewStats> stats = statsStorage.getAllViews(LocalDateTime.parse(start, DateTimeAdapter.formatter),
+                LocalDateTime.parse(end,DateTimeAdapter.formatter), urisDecoded, unique);
         log.info("Статистика по сервисам {} успешно составлена.", Arrays.toString(uris));
         return stats;
     }

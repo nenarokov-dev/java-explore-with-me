@@ -1,11 +1,13 @@
 package ru.practicum.explorewithme.exceptions;
 
+import org.apache.http.conn.HttpHostConnectException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientException;
 import ru.practicum.explorewithme.exceptions.models.ApiError;
 
 import javax.validation.ConstraintViolation;
@@ -97,10 +99,20 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handle(final Exception e) {
+    public ApiError handle(final RestClientException e) {
         return ApiError.builder()
                 .message(e.getMessage())
-                .reason("Ошибка сервера.")
+                .reason("Ошибка сервера."+e.getClass())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError handle(final HttpHostConnectException e) {
+        return ApiError.builder()
+                .message(e.getMessage())
+                .reason("Ошибка сервера."+e.getClass())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .build();
     }

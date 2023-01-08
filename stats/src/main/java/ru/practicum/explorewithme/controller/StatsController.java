@@ -19,13 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 @Validated
 @RestController
-@RequestMapping
+@RequestMapping(value = "http://stats-server:9090")
 public class StatsController {
 
     private final StatsService statsService;
-
-    private final String pattern = "yyyy-MM-dd HH:mm:ss";
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
     @PostMapping("/hit")
     public EndpointHitDto hit(@RequestBody @Valid EndpointHitDto hit) {
@@ -37,7 +34,7 @@ public class StatsController {
                                     @RequestParam String end,
                                     @RequestParam String[] uris,
                                     @RequestParam(defaultValue = "false") Boolean unique) {
-        return statsService.getAllViews(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter), uris, unique);
+        return statsService.getAllViews(start, end, uris, unique);
     }
 
 }
