@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,6 +13,7 @@ import ru.practicum.explorewithme.model.EndpointHit;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class EventStatsClient extends BaseClient {
 
     @Autowired
