@@ -30,8 +30,8 @@ public class StatsController {
     @GetMapping("/stats")
     public List<ViewStats> getStats(@RequestParam String start,
                                     @RequestParam String end,
-                                    @RequestParam String[] uris,
-                                    @RequestParam(defaultValue = "false") Boolean unique) {
+                                    @RequestParam(required = false) String[] uris,
+                                    @RequestParam(required = false, defaultValue = "false") Boolean unique) {
         return statsService.getAllViews(start, end, uris, unique);
     }
 

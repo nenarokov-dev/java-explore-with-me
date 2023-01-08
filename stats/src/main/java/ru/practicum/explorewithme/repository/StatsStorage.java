@@ -12,8 +12,6 @@ import ru.practicum.explorewithme.repository.mapper.ViewStatsMapper;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +21,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public class StatsStorage {
     private final JdbcTemplate jdbcTemplate;
-
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     public EndpointHit save(EndpointHit endpointHit) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -42,27 +38,47 @@ public class StatsStorage {
         return endpointHit;
     }
 
-    public List<ViewStats> getAllViews(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
+    public List<ViewStats> getAllViews(String start, String end, String[] uris, Boolean unique) {
         List<ViewStats> stats = new ArrayList<>();
         if (unique) {
-            for (String uri : uris) {
+            if (uris != null) {
+                for (String uri : uris) {
+                    stats.add(jdbcTemplate.queryForObject(
+                            "SELECT eh.app,eh.uri,count(DISTINCT eh.ip) AS hits " +
+                                    "FROM endpoint_hits as eh " +
+                                    "WHERE eh.uri LIKE '" + uri + "' " +
+                                    "AND eh.time_stamp BETWEEN '" + start + "' " +
+                                    "AND '" + end + "' " +
+                                    "GROUP by eh.app,eh.uri;",
+                            new ViewStatsMapper()));
+                }
+            } else {
                 stats.add(jdbcTemplate.queryForObject(
                         "SELECT eh.app,eh.uri,count(DISTINCT eh.ip) AS hits " +
                                 "FROM endpoint_hits as eh " +
-                                "WHERE eh.uri LIKE '" + uri + "' " +
-                                "AND eh.time_stamp BETWEEN '" + start.format(formatter) + "' " +
-                                "AND '" + end.format(formatter) + "' " +
+                                "WHERE eh.time_stamp BETWEEN '" + start + "' " +
+                                "AND '" + end + "' " +
                                 "GROUP by eh.app,eh.uri;",
                         new ViewStatsMapper()));
             }
         } else {
-            for (String uri : uris) {
+            if (uris != null) {
+                for (String uri : uris) {
+                    stats.add(jdbcTemplate.queryForObject(
+                            "SELECT eh.app,eh.uri,count(eh.ip) AS hits " +
+                                    "FROM endpoint_hits as eh " +
+                                    "WHERE eh.uri LIKE '" + uri + "' " +
+                                    "AND eh.time_stamp BETWEEN '" + start + "' " +
+                                    "AND '" + end + "' " +
+                                    "GROUP by eh.app,eh.uri;",
+                            new ViewStatsMapper()));
+                }
+            } else {
                 stats.add(jdbcTemplate.queryForObject(
-                        "SELECT eh.app,eh.uri,count(eh.ip) AS hits " +
+                        "SELECT eh.app,eh.uri,count(DISTINCT eh.ip) AS hits " +
                                 "FROM endpoint_hits as eh " +
-                                "WHERE eh.uri LIKE '" + uri + "' " +
-                                "AND eh.time_stamp BETWEEN '" + start.format(formatter) + "' " +
-                                "AND '" + end.format(formatter) + "' " +
+                                "WHERE eh.time_stamp BETWEEN '" + start + "' " +
+                                "AND '" + end + "' " +
                                 "GROUP by eh.app,eh.uri;",
                         new ViewStatsMapper()));
             }

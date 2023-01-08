@@ -52,7 +52,7 @@ public class EventServicePublic {
         } else {
             events = eventRepository.findAllByStateOrderById(EventState.PUBLISHED);
         }
-        if (!text.isEmpty()) {
+        if (text != null && !text.isEmpty()) {
             events = events.stream()
                     .filter(e -> (e.getAnnotation().toLowerCase()).contains(text.toLowerCase()) ||
                             (e.getDescription().toLowerCase()).contains(text.toLowerCase()))
