@@ -8,8 +8,6 @@ import ru.practicum.explorewithme.model.ViewStats;
 import ru.practicum.explorewithme.service.StatsService;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**

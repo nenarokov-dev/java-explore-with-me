@@ -34,7 +34,7 @@ public class StatsService {
                 .map(e -> URLDecoder.decode(e, StandardCharsets.UTF_8))
                 .toArray(String[]::new);
         List<ViewStats> stats = statsStorage.getAllViews(LocalDateTime.parse(start, DateTimeAdapter.formatter),
-                LocalDateTime.parse(end,DateTimeAdapter.formatter), urisDecoded, unique);
+                LocalDateTime.parse(end, DateTimeAdapter.formatter), urisDecoded, unique);
         log.info("Статистика по сервисам {} успешно составлена.", Arrays.toString(uris));
         return stats;
     }
