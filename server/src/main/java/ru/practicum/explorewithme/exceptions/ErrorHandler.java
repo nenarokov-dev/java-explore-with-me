@@ -102,7 +102,7 @@ public class ErrorHandler {
     public ApiError handle(final RestClientException e) {
         return ApiError.builder()
                 .message(e.getMessage())
-                .reason("Ошибка сервера."+e.getClass())
+                .reason("Ошибка сервера." + e.getClass())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .build();
     }
@@ -112,7 +112,7 @@ public class ErrorHandler {
     public ApiError handle(final HttpHostConnectException e) {
         return ApiError.builder()
                 .message(e.getMessage())
-                .reason("Ошибка сервера."+e.getClass())
+                .reason("Ошибка сервера." + e.getClass())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .build();
     }
