@@ -95,5 +95,15 @@ public class ErrorHandler {
                 .build();
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError handle(final Exception e) {
+        return ApiError.builder()
+                .message(e.getMessage())
+                .reason("Ошибка сервера.")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .build();
+    }
+
 }
 
