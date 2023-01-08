@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Validated
 @RestController
-@RequestMapping(value = "http://localhost:9090")
+@RequestMapping
 public class StatsController {
 
     private final StatsService statsService;
