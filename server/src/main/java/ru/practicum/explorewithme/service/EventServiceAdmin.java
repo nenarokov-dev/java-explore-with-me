@@ -3,8 +3,11 @@ package ru.practicum.explorewithme.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.explorewithme.client.EventStatsClient;
 import ru.practicum.explorewithme.component.BeanFinder;
 import ru.practicum.explorewithme.component.DateTimeAdapter;
+import ru.practicum.explorewithme.component.EventBuildHelper;
+import ru.practicum.explorewithme.component.EventValuesCollector;
 import ru.practicum.explorewithme.exceptions.BadRequestException;
 import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.model.event.Event;
@@ -15,6 +18,7 @@ import ru.practicum.explorewithme.model.event.mapper.EventMapper;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.CategoriesRepository;
 import ru.practicum.explorewithme.repository.EventRepository;
+import ru.practicum.explorewithme.repository.RequestRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,11 +32,15 @@ public class EventServiceAdmin {
 
     private final EventRepository eventRepository;
     private final CategoriesRepository categoriesRepository;
+    private final RequestRepository requestRepository;
+    private final EventStatsClient statsClient;
     private final Pagination<EventOutputDto> pagination;
 
     public EventOutputDto update(EventDto eventDto, Long eventId) {
         BeanFinder.findEventById(eventId, eventRepository);
         Event event = eventRepository.getReferenceById(eventId);
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (eventDto.getAnnotation() != null) {
             event.setAnnotation(eventDto.getAnnotation());
         }
@@ -53,12 +61,14 @@ public class EventServiceAdmin {
         }
         Event eventAfterUpdate = eventRepository.save(event);
         log.info("Событие id={} успешно обновлено.", eventAfterUpdate.getId());
-        return EventMapper.toEventOutputDtoFromEvent(event);
+        return EventMapper.toEventOutputDtoFromEvent(event, confirmedRequests, views);
     }
 
     public EventOutputDto publish(Long eventId) {
         BeanFinder.findEventById(eventId, eventRepository);
         Event event = eventRepository.getReferenceById(eventId);
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (!event.getState().equals(EventState.PENDING)) {
             String message = "Публиковать можно события, обладающие статусом 'PENDING'.";
             log.warn(message);
@@ -73,12 +83,14 @@ public class EventServiceAdmin {
         event.setState(EventState.PUBLISHED);
         Event publishedEvent = eventRepository.save(event);
         log.info("Событие id={} успешно опубликовано.", eventId);
-        return EventMapper.toEventOutputDtoFromEvent(publishedEvent);
+        return EventMapper.toEventOutputDtoFromEvent(publishedEvent, confirmedRequests, views);
     }
 
     public EventOutputDto reject(Long eventId) {
         BeanFinder.findEventById(eventId, eventRepository);
         Event event = eventRepository.getReferenceById(eventId);
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (event.getState().equals(EventState.PUBLISHED)) {
             String message = "Невозможно отменить опубликованное событие.";
             log.warn(message);
@@ -92,7 +104,7 @@ public class EventServiceAdmin {
         event.setState(EventState.CANCELED);
         Event canceledEvent = eventRepository.save(event);
         log.info("Событие id={} отменено.", eventId);
-        return EventMapper.toEventOutputDtoFromEvent(canceledEvent);
+        return EventMapper.toEventOutputDtoFromEvent(canceledEvent, confirmedRequests, views);
     }
 
     public List<EventOutputDto> getAll(Integer[] users, String[] states, Integer[] categories,
@@ -134,9 +146,7 @@ public class EventServiceAdmin {
                         .collect(Collectors.toList());
             }
         }
-        List<EventOutputDto> filteredEvents = events.stream()
-                .map(EventMapper::toEventOutputDtoFromEvent)
-                .collect(Collectors.toList());
+        List<EventOutputDto> filteredEvents = EventBuildHelper.getEventOutputDto(events, requestRepository, statsClient);
         log.info("Отсортированный список событий успешно получен.");
         System.out.println(filteredEvents);
         return pagination.setPagination(from, size, filteredEvents);

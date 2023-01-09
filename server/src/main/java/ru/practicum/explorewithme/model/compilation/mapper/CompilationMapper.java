@@ -1,12 +1,13 @@
 package ru.practicum.explorewithme.model.compilation.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.explorewithme.client.EventStatsClient;
+import ru.practicum.explorewithme.component.EventBuildHelper;
 import ru.practicum.explorewithme.model.compilation.EventCompilation;
 import ru.practicum.explorewithme.model.compilation.dto.EventCompilationDto;
 import ru.practicum.explorewithme.model.compilation.dto.EventCompilationOutputDto;
 import ru.practicum.explorewithme.model.event.Event;
-import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
-import ru.practicum.explorewithme.model.event.mapper.EventMapper;
+import ru.practicum.explorewithme.repository.RequestRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -34,13 +35,12 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static EventCompilationOutputDto toEventCompilationOutputDto(EventCompilation compilation) {
-        List<EventOutputShortDto> events = compilation.getEvents().stream()
-                .map(EventMapper::toEventOutputShortDto)
-                .collect(Collectors.toList());
+    public static EventCompilationOutputDto toEventCompilationOutputDto(EventCompilation compilation,
+                                                                        RequestRepository requestRepository,
+                                                                        EventStatsClient statsClient) {
         return EventCompilationOutputDto.builder()
                 .id(compilation.getId())
-                .events(events)
+                .events(EventBuildHelper.getEventOutputShortDto(compilation.getEvents(), requestRepository, statsClient))
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())
                 .build();

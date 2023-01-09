@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explorewithme.model.EndpointHit;
 
+import java.util.Collection;
 import java.util.Map;
 
 @Service
@@ -26,14 +27,14 @@ public class EventStatsClient extends BaseClient {
         return post("/hit", hit);
     }
 
-    public ResponseEntity<Object> getStats(String start, String end, String[] uris, Boolean unique) {
+    public ResponseEntity<Object> getStats(String start, String end, Collection<String> uris, Boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,
                 "unique", unique
         );
         StringBuilder stringBuilder = new StringBuilder();
-        if (uris.length > 0) {
+        if (uris.size() > 0) {
             for (String s : uris) {
                 stringBuilder.append("uris=").append(s).append("&");
             }

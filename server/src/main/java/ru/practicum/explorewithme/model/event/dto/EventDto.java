@@ -10,6 +10,7 @@ import ru.practicum.explorewithme.model.location.dto.LocationDto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Data
@@ -37,6 +38,7 @@ public class EventDto {
     private LocalDateTime eventDate;
     private LocationDto location;
     private Boolean paid;
+    @PositiveOrZero(message = "Максимальное количество участников события должно быть равно или больше нуля.")
     private Integer participantLimit;
     @Builder.Default
     private Boolean requestModeration = true;

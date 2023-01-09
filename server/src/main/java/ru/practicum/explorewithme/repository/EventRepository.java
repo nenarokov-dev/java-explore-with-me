@@ -16,9 +16,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorId(Long id);
 
-    List<Event> findAllByStateOrderByEventDateDesc(EventState state);
+    List<Event> findAllByState(EventState state);
 
-    List<Event> findAllByStateOrderByViewsDesc(EventState state);
 
     List<Event> findAllByStateOrderById(EventState state);
 

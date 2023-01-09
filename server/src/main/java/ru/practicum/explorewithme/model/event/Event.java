@@ -37,7 +37,7 @@ public class Event {
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     @OneToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "id")
     private Location location;
     @Column(name = "is_paid", nullable = false)
     private boolean paid;
@@ -50,11 +50,7 @@ public class Event {
     @Column(name = "creation_date", nullable = false)
     @Builder.Default
     private LocalDateTime created = LocalDateTime.now();
-    @Column(name = "views", nullable = false)
-    private Long views;
     @Enumerated(value = EnumType.STRING)
     @Column(name = "state", nullable = false)
     private EventState state;
-    @Column(name = "confirmed_requests", nullable = false)
-    private Long confirmedRequests;
 }

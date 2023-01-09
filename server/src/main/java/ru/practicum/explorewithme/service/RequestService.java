@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
+import ru.practicum.explorewithme.component.EventValuesCollector;
 import ru.practicum.explorewithme.exceptions.BadRequestException;
 import ru.practicum.explorewithme.exceptions.DuplicateException;
 import ru.practicum.explorewithme.exceptions.ForbiddenException;
@@ -27,9 +28,7 @@ import java.util.stream.Collectors;
 public class RequestService {
 
     private UserRepository userRepository;
-
     private EventRepository eventRepository;
-
     private RequestRepository requestRepository;
 
     public RequestDto add(Long userId, Long eventId) {
@@ -49,7 +48,8 @@ public class RequestService {
             log.warn(message);
             throw new ForbiddenException(message);
         }
-        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        if (event.getParticipantLimit() == confirmedRequests) {
             String message = "Достигнут лимит на участие в событии.";
             log.warn(message);
             throw new ForbiddenException(message);
@@ -119,7 +119,8 @@ public class RequestService {
         if (event.getRequestModeration().equals(false)) {
             return confirmRequest(request, eventId);
         }
-        if (event.getConfirmedRequests() == event.getParticipantLimit()) {
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        if (confirmedRequests == event.getParticipantLimit()) {
             String message = "Невозможно подтвердить заявку на участие.Достигнут максимум участников.";
             log.warn(message);
             throw new BadRequestException(message);
@@ -130,7 +131,6 @@ public class RequestService {
             throw new BadRequestException(message);
         }
         RequestDto requestDto = confirmRequest(request, eventId);
-        Long confirmedRequests = requestRepository.countAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
         if (confirmedRequests == event.getParticipantLimit()) {
             List<Long> unconfirmedRequestsId = requestRepository
                     .findRequestsIdByStatusAndEventId(RequestStatus.PENDING, eventId);
@@ -167,9 +167,6 @@ public class RequestService {
     private RequestDto confirmRequest(Request request, Long eventId) {
         request.setStatus(RequestStatus.CONFIRMED);
         Request confirmedRequest = requestRepository.save(request);
-        Event eventUpdated = eventRepository.getReferenceById(eventId);
-        eventUpdated.setConfirmedRequests(requestRepository.countAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED));
-        eventRepository.save(eventUpdated);
         log.info("Запрос id={} на участие в событии id={} успешно подтвержден.", request.getId(), eventId);
         return RequestMapper.toRequestDto(confirmedRequest);
     }

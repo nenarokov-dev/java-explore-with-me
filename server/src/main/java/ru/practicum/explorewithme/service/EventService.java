@@ -3,7 +3,10 @@ package ru.practicum.explorewithme.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.explorewithme.client.EventStatsClient;
 import ru.practicum.explorewithme.component.BeanFinder;
+import ru.practicum.explorewithme.component.EventBuildHelper;
+import ru.practicum.explorewithme.component.EventValuesCollector;
 import ru.practicum.explorewithme.exceptions.BadRequestException;
 import ru.practicum.explorewithme.exceptions.ForbiddenException;
 import ru.practicum.explorewithme.model.category.EventCategory;
@@ -16,22 +19,20 @@ import ru.practicum.explorewithme.model.location.Location;
 import ru.practicum.explorewithme.model.location.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.pagination.Pagination;
-import ru.practicum.explorewithme.repository.CategoriesRepository;
-import ru.practicum.explorewithme.repository.EventLocationRepository;
-import ru.practicum.explorewithme.repository.EventRepository;
-import ru.practicum.explorewithme.repository.UserRepository;
+import ru.practicum.explorewithme.repository.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class EventService {
+    private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final EventLocationRepository eventLocationRepository;
     private final CategoriesRepository categoriesRepository;
+    private final EventStatsClient statsClient;
     private final Pagination<EventOutputDto> pagination;
 
     public EventOutputDto add(EventDto eventDto, Long userId) {
@@ -39,25 +40,27 @@ public class EventService {
         EventCategory category = BeanFinder.findEventCategoryById(eventDto.getCategory(), categoriesRepository);
         Location location = eventLocationRepository.save(LocationMapper.toLocationFromDto(eventDto.getLocation()));
         Event newEvent = EventMapper.toEventFromEventDto(eventDto, category, location, user);
-        newEvent.setLocation(location);
         Event event = eventRepository.save(newEvent);
         log.info("Событие id={} успешно сохранено.", event.getId());
-        return EventMapper.toEventOutputDtoFromEvent(event);
+        return EventMapper.toEventOutputDtoFromEvent(event, 0L, 0L);
     }
 
     public EventOutputDto getById(Long userId, Long eventId) {
         User user = BeanFinder.findUserById(userId, userRepository);
         Event event = eventRepository.getReferenceById(eventId);
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         log.info("Событие id={} успешно получено.", eventId);
-        return EventMapper.toEventOutputDtoFromEvent(event);
+        return EventMapper.toEventOutputDtoFromEvent(event, confirmedRequests, views);
     }
 
     public EventOutputDto update(EventDto eventDto, Long userId) {
         User user = BeanFinder.findUserById(userId, userRepository);
-        BeanFinder.findEventById(eventDto.getEventId(), eventRepository);
-        System.out.println(eventDto);
-        Event event = eventRepository.getReferenceById(eventDto.getEventId());
-        System.out.println(event);
+        Long eventId = eventDto.getEventId();
+        BeanFinder.findEventById(eventId, eventRepository);
+        Event event = eventRepository.getReferenceById(eventId);
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (!user.equals(event.getInitiator())) {
             String message = "Только инициатор события может его изменить.";
             log.warn(message);
@@ -91,22 +94,23 @@ public class EventService {
         }
         Event eventAfterUpdate = eventRepository.save(event);
         log.info("Событие id={} успешно обновлено.", eventAfterUpdate.getId());
-        return EventMapper.toEventOutputDtoFromEvent(event);
+        return EventMapper.toEventOutputDtoFromEvent(event, confirmedRequests, views);
     }
 
     public List<EventOutputDto> getAllByInitiator(Long userId, Integer from, Integer size) {
         User user = BeanFinder.findUserById(userId, userRepository);
-        List<EventOutputDto> events = eventRepository.findAllByInitiatorId(userId).stream()
-                .map(EventMapper::toEventOutputDtoFromEvent)
-                .collect(Collectors.toList());
+        List<Event> events = eventRepository.findAllByInitiatorId(userId);
+        List<EventOutputDto> eventOutput = EventBuildHelper.getEventOutputDto(events, requestRepository, statsClient);
         log.info("Список событий,созданных пользователем id={} успешно получен.", user.getId());
-        return pagination.setPagination(from, size, events);
+        return pagination.setPagination(from, size, eventOutput);
     }
 
     public EventOutputDto cancelEvent(Long userId, Long eventId) {
         User user = BeanFinder.findUserById(userId, userRepository);
         BeanFinder.findEventById(eventId, eventRepository);
         Event event = eventRepository.getReferenceById(eventId);
+        Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
+        Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (!user.equals(event.getInitiator())) {
             String message = "Только инициатор события может его отменить.";
             log.warn(message);
@@ -120,7 +124,6 @@ public class EventService {
         event.setState(EventState.CANCELED);
         eventRepository.save(event);
         log.info("Событие id={} отменено.", eventId);
-        return EventMapper.toEventOutputDtoFromEvent(event);
+        return EventMapper.toEventOutputDtoFromEvent(event, confirmedRequests, views);
     }
-
 }

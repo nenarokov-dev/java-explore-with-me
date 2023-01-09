@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.model.event.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.explorewithme.component.DateTimeAdapter;
 import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.model.category.dto.CategoryDto;
 import ru.practicum.explorewithme.model.event.Event;
@@ -12,9 +13,6 @@ import ru.practicum.explorewithme.model.location.Location;
 import ru.practicum.explorewithme.model.location.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.model.user.mapper.UserMapper;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 
 @Component
@@ -32,53 +30,47 @@ public class EventMapper {
                 .participantLimit(eventDto.getParticipantLimit())
                 .requestModeration(eventDto.getRequestModeration())
                 .state(EventState.PENDING)
-                .confirmedRequests(0L)
-                .views(0L)
                 .initiator(user)
                 .build();
     }
 
-    public static EventOutputDto toEventOutputDtoFromEvent(Event event) {
+    public static EventOutputDto toEventOutputDtoFromEvent(Event event, Long confirmedRequests, Long views) {
+        String publishedOn = null;
+        if (event.getPublishedOn() != null) {
+            publishedOn = event.getPublishedOn().format(DateTimeAdapter.formatter);
+        }
         return EventOutputDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
                 .annotation(event.getAnnotation())
                 .description(event.getDescription())
                 .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
-                .eventDate(convertDateTimeToString(event.getEventDate()))
+                .eventDate(event.getEventDate().format(DateTimeAdapter.formatter))
                 .location(LocationMapper.toLocationDto(event.getLocation()))
                 .paid(event.isPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedOn(convertDateTimeToString(event.getPublishedOn()))
+                .publishedOn(publishedOn)
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
-                .confirmedRequests(event.getConfirmedRequests())
-                .createdOn(convertDateTimeToString(event.getCreated()))
-                .views(event.getViews())
+                .confirmedRequests(confirmedRequests)
+                .createdOn(event.getCreated().format(DateTimeAdapter.formatter))
+                .views(views)
                 .build();
     }
 
-    public static EventOutputShortDto toEventOutputShortDto(Event event) {
+    public static EventOutputShortDto toEventOutputShortDto(Event event, Long confirmedRequests, Long views) {
         return EventOutputShortDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
                 .annotation(event.getAnnotation())
                 .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
-                .eventDate(convertDateTimeToString(event.getEventDate()))
+                .eventDate(event.getEventDate().format(DateTimeAdapter.formatter))
                 .paid(event.isPaid())
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
-                .views(event.getViews())
-                .confirmedRequests(event.getConfirmedRequests())
-                .createdOn(convertDateTimeToString(event.getCreated()))
+                .views(views)
+                .confirmedRequests(confirmedRequests)
                 .build();
-    }
-
-    private static String convertDateTimeToString(LocalDateTime dateTime) {
-        if (dateTime != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            return dateTime.format(formatter);
-        } else return null;
     }
 
 }

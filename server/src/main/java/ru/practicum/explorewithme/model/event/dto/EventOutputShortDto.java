@@ -16,7 +16,6 @@ public class EventOutputShortDto {
     private String annotation;
     private CategoryDto category;
     private String eventDate;
-    private String createdOn;
     private UserShortDto initiator;
     private boolean paid;
     private Long views;
