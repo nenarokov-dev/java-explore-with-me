@@ -28,10 +28,10 @@ public class Event {
     private String annotation;
     @Column(name = "description", nullable = false)
     private String description;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private EventCategory category;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "initiator_id")
     private User initiator;
     @Column(name = "event_date", nullable = false)

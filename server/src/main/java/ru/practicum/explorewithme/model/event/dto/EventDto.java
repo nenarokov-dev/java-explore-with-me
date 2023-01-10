@@ -21,6 +21,7 @@ public class EventDto {
     private Long eventId;
     @Length(max = 120, min = 3,
             message = "Заголовок события не должен быть короче 3 символов, и не должен быть длиннее 120 символов.")
+    @NotBlank(message = "Заголовок события не должен быть пустым")
     private String title;
     @Length(max = 2000, min = 20,
             message = "Краткое описание события не должно быть короче 20 символов," +
