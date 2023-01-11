@@ -146,8 +146,8 @@ public class EventService {
                 .collect(Collectors.toList());
         // получаем список всех опубликованных событий пользователей, на которых подписан пользователь userId
         // дата начала этих событий не менее чем через 2 часа после текущего времени.
-        List<Event> events = eventRepository.
-                findAllByInitiator_IdInAndStateAndEventDateAfter(followedEventInitiatorIds, EventState.PUBLISHED,
+        List<Event> events = eventRepository
+                .findAllByInitiator_IdInAndStateAndEventDateAfter(followedEventInitiatorIds, EventState.PUBLISHED,
                         LocalDateTime.now().plusHours(2));
         // Фильтруем в зависимости от входных параметров запроса.
         if (paid != null && paid.equals(true)) {
