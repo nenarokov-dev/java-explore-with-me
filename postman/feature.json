@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "c3c28837-7ddd-4b55-babb-6d69eebf457a",
 		"name": "feature",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "22502514"
 	},
 	"item": [
@@ -19,11 +19,9 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
 									"});",
-									"pm.test(\"Test update user\", function () {",
+									"pm.test(\"Test subscribe user 1-2\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.id).to.eql(1);",
-									"    pm.expect(jsonData.email).to.eql('update@user.com');",
-									"    pm.expect(jsonData.name).to.eql('update');",
+									"    pm.expect(jsonData.subscribeList[0].id).to.eql(2);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -44,23 +42,25 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"update\",\n    \"email\": \"update@user.com\"\n}"
-						},
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId",
+							"raw": "{{baseUrl}}/users/:userId/subscribe/:followId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								":userId"
+								":userId",
+								"subscribe",
+								":followId"
 							],
 							"variable": [
 								{
 									"key": "userId",
 									"value": "1"
+								},
+								{
+									"key": "followId",
+									"value": "2"
 								}
 							]
 						}
@@ -77,11 +77,10 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
 									"});",
-									"pm.test(\"Test update user\", function () {",
+									"pm.test(\"Test subscribe user 1-3\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.id).to.eql(1);",
-									"    pm.expect(jsonData.email).to.eql('update@user.com');",
-									"    pm.expect(jsonData.name).to.eql('update');",
+									"    pm.expect(jsonData.subscribeList[0].id).to.eql(3);",
+									"    pm.expect(jsonData.subscribeList[0].id).to.eql(2);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -102,23 +101,25 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"update\",\n    \"email\": \"update@user.com\"\n}"
-						},
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId",
+							"raw": "{{baseUrl}}/users/:userId/subscribe/:followId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								":userId"
+								":userId",
+								"subscribe",
+								":followId"
 							],
 							"variable": [
 								{
 									"key": "userId",
 									"value": "1"
+								},
+								{
+									"key": "followId",
+									"value": "3"
 								}
 							]
 						}
@@ -135,11 +136,9 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
 									"});",
-									"pm.test(\"Test update user\", function () {",
+									"pm.test(\"Test unsubscribe user 1-2\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.id).to.eql(1);",
-									"    pm.expect(jsonData.email).to.eql('update@user.com');",
-									"    pm.expect(jsonData.name).to.eql('update');",
+									"    pm.expect(jsonData.subscribeList[0].id).to.eql(3);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -165,18 +164,24 @@
 							"raw": "{\n    \"name\": \"update\",\n    \"email\": \"update@user.com\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId",
+							"raw": "{{baseUrl}}/users/:userId/unsubscribe/:followId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								":userId"
+								":userId",
+								"unsubscribe",
+								":followId"
 							],
 							"variable": [
 								{
 									"key": "userId",
 									"value": "1"
+								},
+								{
+									"key": "followId",
+									"value": "2"
 								}
 							]
 						}
@@ -195,9 +200,7 @@
 									"});",
 									"pm.test(\"Test get user\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.id).to.eql(2);",
-									"    pm.expect(jsonData.email).to.eql('user@user.com');",
-									"    pm.expect(jsonData.name).to.eql('user');",
+									"    pm.expect(jsonData.length).to.eql(1);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -214,18 +217,20 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId",
+							"raw": "{{baseUrl}}/users/:userId/subscribe/events",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								":userId"
+								":userId",
+								"subscribe",
+								"events"
 							],
 							"variable": [
 								{
 									"key": "userId",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
