@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.EventState;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -18,13 +19,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByState(EventState state);
 
+    List<Event> findAllByInitiator_IdInAndStateAndEventDateAfter(List<Long> ids, EventState state, LocalDateTime time);
 
-    List<Event> findAllByStateOrderById(EventState state);
-
-    List<Event> findEventsByInitiator_IdIn(List<Long> users);
-
-    List<Event> findEventsByInitiator_IdInAndStateInAndCategory_IdIn(List<Long> users,
-                                                                     List<EventState> states,
-                                                                     List<Long> categories);
 
 }

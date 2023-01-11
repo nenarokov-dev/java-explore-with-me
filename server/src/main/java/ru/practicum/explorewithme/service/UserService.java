@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.component.BeanFinder;
+import ru.practicum.explorewithme.exceptions.BadRequestException;
 import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.model.user.dto.UserDto;
 import ru.practicum.explorewithme.model.user.mapper.UserMapper;
@@ -63,5 +64,39 @@ public class UserService {
     public void delete(Long userId) {
         userStorage.deleteById(userId);
         log.info("Пользователь id={} был успешно удалён.", userId);
+    }
+
+    public UserDto subscribe(Long subscriberId, Long eventInitiatorId) {
+        BeanFinder.findUserById(subscriberId, userStorage);
+        BeanFinder.findUserById(eventInitiatorId, userStorage);
+        User subscriber = userStorage.getReferenceById(subscriberId);
+        User eventInitiator = userStorage.getReferenceById(eventInitiatorId);
+        if (subscriber.getSubscribeList().contains(eventInitiator)) {
+            String message = String.format("Пользователь id=%s уже подписан на пользователя id=%s",
+                    subscriberId, eventInitiatorId);
+            log.warn(message);
+            throw new BadRequestException(message);
+        }
+        subscriber.getSubscribeList().add(eventInitiator);
+        User subscriberAfterSubscribe = userStorage.save(subscriber);
+        log.info("Пользователь id={} успешно подписался на пользователя id={}.", subscriberId, eventInitiatorId);
+        return UserMapper.toUserDto(subscriberAfterSubscribe);
+    }
+
+    public UserDto unsubscribe(Long subscriberId, Long eventInitiatorId) {
+        BeanFinder.findUserById(subscriberId, userStorage);
+        BeanFinder.findUserById(eventInitiatorId, userStorage);
+        User subscriber = userStorage.getReferenceById(subscriberId);
+        User eventInitiator = userStorage.getReferenceById(eventInitiatorId);
+        if (!subscriber.getSubscribeList().contains(eventInitiator)) {
+            String message = String.format("Пользователь id=%s не подписан на пользователя id=%s",
+                    subscriberId, eventInitiatorId);
+            log.warn(message);
+            throw new BadRequestException(message);
+        }
+        subscriber.getSubscribeList().remove(eventInitiator);
+        User subscriberAfterSubscribe = userStorage.save(subscriber);
+        log.info("Пользователь id={} успешно отписался от пользователя id={}.", subscriberId, eventInitiatorId);
+        return UserMapper.toUserDto(subscriberAfterSubscribe);
     }
 }

@@ -14,6 +14,7 @@ import ru.practicum.explorewithme.model.event.Event;
 import ru.practicum.explorewithme.model.event.EventState;
 import ru.practicum.explorewithme.model.event.dto.EventDto;
 import ru.practicum.explorewithme.model.event.dto.EventOutputDto;
+import ru.practicum.explorewithme.model.event.dto.EventOutputShortDto;
 import ru.practicum.explorewithme.model.event.mapper.EventMapper;
 import ru.practicum.explorewithme.model.location.Location;
 import ru.practicum.explorewithme.model.location.mapper.LocationMapper;
@@ -21,7 +22,10 @@ import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.pagination.Pagination;
 import ru.practicum.explorewithme.repository.*;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,6 +38,7 @@ public class EventService {
     private final CategoriesRepository categoriesRepository;
     private final EventStatsClient statsClient;
     private final Pagination<EventOutputDto> pagination;
+    private final Pagination<EventOutputShortDto> paginationShort;
 
     public EventOutputDto add(EventDto eventDto, Long userId) {
         User user = BeanFinder.findUserById(userId, userRepository);
@@ -125,5 +130,48 @@ public class EventService {
         eventRepository.save(event);
         log.info("Событие id={} отменено.", eventId);
         return EventMapper.toEventOutputDtoFromEvent(event, confirmedRequests, views);
+    }
+
+    public List<EventOutputShortDto> getActualEventsByFollow(Long userId,
+                                                             Boolean paid,          //только платные/бесплатные
+                                                             Boolean onlyAvailable, //только доступные/все
+                                                             String sort,           //сортировка по дате/просмотрам
+                                                             Integer from,
+                                                             Integer size) {
+        BeanFinder.findUserById(userId, userRepository);
+        User user = userRepository.getReferenceById(userId);
+        //Получаем список пользователей на которых подписан пользователь userId
+        List<Long> followedEventInitiatorIds = user.getSubscribeList().stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+        // получаем список всех опубликованных событий пользователей, на которых подписан пользователь userId
+        // дата начала этих событий не менее чем через 2 часа после текущего времени.
+        List<Event> events = eventRepository.
+                findAllByInitiator_IdInAndStateAndEventDateAfter(followedEventInitiatorIds, EventState.PUBLISHED,
+                        LocalDateTime.now().plusHours(2));
+        // Фильтруем в зависимости от входных параметров запроса.
+        if (paid != null && paid.equals(true)) {
+            events = events.stream()
+                    .filter(e -> paid.equals(e.isPaid()))
+                    .collect(Collectors.toList());
+        }
+        if (onlyAvailable != null && onlyAvailable.equals(true)) {
+            events = events.stream()
+                    .filter(e -> EventValuesCollector.getConfirmedRequest(e.getId(), requestRepository) <
+                            e.getParticipantLimit())
+                    .collect(Collectors.toList());
+        }
+        List<EventOutputShortDto> filteredEvents = EventBuildHelper.getEventOutputShortDto(events, requestRepository,
+                statsClient);
+        if (sort != null) {
+            if (sort.equalsIgnoreCase("event_date")) {
+                filteredEvents = filteredEvents.stream().sorted(Comparator.comparing(EventOutputShortDto::getEventDate))
+                        .collect(Collectors.toList());
+            } else if (sort.equalsIgnoreCase("views")) {
+                filteredEvents = filteredEvents.stream().sorted(Comparator.comparing(EventOutputShortDto::getViews))
+                        .collect(Collectors.toList());
+            }
+        }
+        return paginationShort.setPagination(from, size, filteredEvents);
     }
 }

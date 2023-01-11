@@ -5,6 +5,8 @@ import ru.practicum.explorewithme.model.user.User;
 import ru.practicum.explorewithme.model.user.dto.UserDto;
 import ru.practicum.explorewithme.model.user.dto.UserShortDto;
 
+import java.util.stream.Collectors;
+
 
 @Component
 public class UserMapper {
@@ -14,6 +16,7 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .followList(user.getSubscribeList().stream().map(UserMapper::toUserShortDto).collect(Collectors.toSet()))
                 .build();
     }
 

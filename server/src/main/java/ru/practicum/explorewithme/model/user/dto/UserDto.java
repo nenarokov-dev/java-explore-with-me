@@ -6,6 +6,8 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +20,7 @@ public class UserDto {
     @Email(message = "Введённая строка не обладает структурой email [***@**.**]")
     @NotBlank(message = "Адрес электронной почты не может быть пустым.")
     private String email;
+    @Builder.Default
+    private Set<UserShortDto> followList = new HashSet<>();
 
 }
