@@ -150,7 +150,7 @@ public class EventService {
                 .findAllByInitiator_IdInAndStateAndEventDateAfter(followedEventInitiatorIds, EventState.PUBLISHED,
                         LocalDateTime.now().plusHours(2));
         // Фильтруем в зависимости от входных параметров запроса.
-        if (paid != null && paid.equals(true)) {
+        if (paid != null) {
             events = events.stream()
                     .filter(e -> paid.equals(e.isPaid()))
                     .collect(Collectors.toList());
