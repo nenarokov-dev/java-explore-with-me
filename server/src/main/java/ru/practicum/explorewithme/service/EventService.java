@@ -52,7 +52,12 @@ public class EventService {
 
     public EventOutputDto getById(Long userId, Long eventId) {
         User user = BeanFinder.findUserById(userId, userRepository);
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
+        if (!event.getInitiator().equals(user)) {
+            String message = "Только инициатор события может просматривать полную информацию о событии.";
+            log.warn(message);
+            throw new ForbiddenException(message);
+        }
         Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
         Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         log.info("Событие id={} успешно получено.", eventId);
@@ -62,8 +67,7 @@ public class EventService {
     public EventOutputDto update(EventDto eventDto, Long userId) {
         User user = BeanFinder.findUserById(userId, userRepository);
         Long eventId = eventDto.getEventId();
-        BeanFinder.findEventById(eventId, eventRepository);
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
         Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (!user.equals(event.getInitiator())) {
@@ -112,8 +116,7 @@ public class EventService {
 
     public EventOutputDto cancelEvent(Long userId, Long eventId) {
         User user = BeanFinder.findUserById(userId, userRepository);
-        BeanFinder.findEventById(eventId, eventRepository);
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
         Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (!user.equals(event.getInitiator())) {
@@ -138,8 +141,7 @@ public class EventService {
                                                              String sort,           //сортировка по дате/просмотрам
                                                              Integer from,
                                                              Integer size) {
-        BeanFinder.findUserById(userId, userRepository);
-        User user = userRepository.getReferenceById(userId);
+        User user = BeanFinder.findUserById(userId, userRepository);
         //Получаем список пользователей на которых подписан пользователь userId
         List<Long> followedEventInitiatorIds = user.getSubscribeList().stream()
                 .map(User::getId)

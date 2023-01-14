@@ -66,32 +66,25 @@ public class EventCompilationService {
     }
 
     public EventCompilationOutputDto addOtherEventToCompilation(Long compId, Long eventId) {
-        BeanFinder.findEventsCompilationById(compId, compilationRepository);
-        EventCompilation compilation = compilationRepository.getReferenceById(compId);
+        EventCompilation compilation = BeanFinder.findEventsCompilationById(compId, compilationRepository);
         Event event = BeanFinder.findEventById(eventId, eventRepository);
-        System.out.println(compilation);
         compilation.getEvents().add(event);
-        System.out.println(compilation);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);
         log.info("Новое событие id={} было успешно добавлено в подборку событий id={}.", eventId, compId);
         return CompilationMapper.toEventCompilationOutputDto(updatedCompilation, requestRepository, statsClient);
     }
 
     public EventCompilationOutputDto removeEventFromCompilation(Long compId, Long eventId) {
-        BeanFinder.findEventsCompilationById(compId, compilationRepository);
-        EventCompilation compilation = compilationRepository.getReferenceById(compId);
+        EventCompilation compilation = BeanFinder.findEventsCompilationById(compId, compilationRepository);
         Event event = BeanFinder.findEventById(eventId, eventRepository);
-        List<Event> events = compilation.getEvents();
-        events.remove(event);
-        compilation.setEvents(events);
+        compilation.getEvents().remove(event);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);
         log.info("Событие id={} было успешно удалено из подборки событий id={}.", eventId, compId);
         return CompilationMapper.toEventCompilationOutputDto(updatedCompilation, requestRepository, statsClient);
     }
 
     public EventCompilationOutputDto removeOrSetCompilationFromMainPage(Long compId) {
-        BeanFinder.findEventsCompilationById(compId, compilationRepository);
-        EventCompilation compilation = compilationRepository.getReferenceById(compId);
+        EventCompilation compilation = BeanFinder.findEventsCompilationById(compId, compilationRepository);
         Boolean pinned = compilation.getPinned();
         compilation.setPinned(!pinned);
         EventCompilation updatedCompilation = compilationRepository.save(compilation);

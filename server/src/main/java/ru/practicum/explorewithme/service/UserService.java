@@ -48,8 +48,7 @@ public class UserService {
 
     public UserDto update(UserDto userForUpdate, Long userId) {
         userForUpdate.setId(userId);
-        BeanFinder.findUserById(userId, userStorage);
-        User user = userStorage.getReferenceById(userId);
+        User user = BeanFinder.findUserById(userId, userStorage);
         if (userForUpdate.getEmail() != null) {
             user.setEmail(userForUpdate.getEmail());
         }
@@ -67,10 +66,8 @@ public class UserService {
     }
 
     public UserDto subscribe(Long subscriberId, Long eventInitiatorId) {
-        BeanFinder.findUserById(subscriberId, userStorage);
-        BeanFinder.findUserById(eventInitiatorId, userStorage);
-        User subscriber = userStorage.getReferenceById(subscriberId);
-        User eventInitiator = userStorage.getReferenceById(eventInitiatorId);
+        User subscriber = BeanFinder.findUserById(subscriberId, userStorage);
+        User eventInitiator = BeanFinder.findUserById(eventInitiatorId, userStorage);
         if (subscriber.getSubscribeList().contains(eventInitiator)) {
             String message = String.format("Пользователь id=%s уже подписан на пользователя id=%s",
                     subscriberId, eventInitiatorId);
@@ -84,10 +81,8 @@ public class UserService {
     }
 
     public UserDto unsubscribe(Long subscriberId, Long eventInitiatorId) {
-        BeanFinder.findUserById(subscriberId, userStorage);
-        BeanFinder.findUserById(eventInitiatorId, userStorage);
-        User subscriber = userStorage.getReferenceById(subscriberId);
-        User eventInitiator = userStorage.getReferenceById(eventInitiatorId);
+        User subscriber = BeanFinder.findUserById(subscriberId, userStorage);
+        User eventInitiator = BeanFinder.findUserById(eventInitiatorId, userStorage);
         if (!subscriber.getSubscribeList().contains(eventInitiator)) {
             String message = String.format("Пользователь id=%s не подписан на пользователя id=%s",
                     subscriberId, eventInitiatorId);

@@ -37,8 +37,7 @@ public class EventServiceAdmin {
     private final Pagination<EventOutputDto> pagination;
 
     public EventOutputDto update(EventDto eventDto, Long eventId) {
-        BeanFinder.findEventById(eventId, eventRepository);
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
         Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (eventDto.getAnnotation() != null) {
@@ -65,8 +64,7 @@ public class EventServiceAdmin {
     }
 
     public EventOutputDto publish(Long eventId) {
-        BeanFinder.findEventById(eventId, eventRepository);
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
         Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (!event.getState().equals(EventState.PENDING)) {
@@ -87,8 +85,7 @@ public class EventServiceAdmin {
     }
 
     public EventOutputDto reject(Long eventId) {
-        BeanFinder.findEventById(eventId, eventRepository);
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         Long confirmedRequests = EventValuesCollector.getConfirmedRequest(eventId, requestRepository);
         Long views = EventValuesCollector.getEventViews(List.of(eventId), statsClient).get(eventId);
         if (event.getState().equals(EventState.PUBLISHED)) {
