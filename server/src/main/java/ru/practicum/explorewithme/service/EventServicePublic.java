@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.client.EventStatsClient;
+import ru.practicum.explorewithme.component.BeanFinder;
 import ru.practicum.explorewithme.component.DateTimeAdapter;
 import ru.practicum.explorewithme.component.EventBuildHelper;
 import ru.practicum.explorewithme.component.EventValuesCollector;
@@ -105,7 +106,7 @@ public class EventServicePublic {
     }
 
     public EventOutputDto getById(Long eventId, HttpServletRequest request) {
-        Event event = eventRepository.getReferenceById(eventId);
+        Event event = BeanFinder.findEventById(eventId, eventRepository);
         if (!event.getState().equals(EventState.PUBLISHED)) {
             String message = "Нет доступа к информации о событии. Событие ещё не опубликовано.";
             log.warn(message);

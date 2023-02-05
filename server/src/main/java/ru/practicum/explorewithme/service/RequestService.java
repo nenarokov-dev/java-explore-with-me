@@ -77,8 +77,7 @@ public class RequestService {
 
     public RequestDto rejectByRequester(Long userId, Long requestId) {
         User user = BeanFinder.findUserById(userId, userRepository);
-        BeanFinder.findRequestById(requestId, requestRepository);
-        Request request = requestRepository.getReferenceById(requestId);
+        Request request = BeanFinder.findRequestById(requestId, requestRepository);
         if (!request.getRequester().equals(user)) {
             String message = "Отменить участие в собитии может только автор запроса.";
             log.warn(message);
@@ -86,7 +85,7 @@ public class RequestService {
         }
         request.setStatus(RequestStatus.CANCELED);
         Request canceledRequest = requestRepository.save(request);
-        log.info("Запрос на участие в событии id={} успешно добавлен.", canceledRequest.getId());
+        log.info("Запрос на участие в событии id={} успешно отменен.", canceledRequest.getId());
         return RequestMapper.toRequestDto(canceledRequest);
     }
 
@@ -109,13 +108,12 @@ public class RequestService {
     public RequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
         User user = BeanFinder.findUserById(userId, userRepository);
         Event event = BeanFinder.findEventById(eventId, eventRepository);
-        BeanFinder.findRequestById(reqId, requestRepository);
+        Request request = BeanFinder.findRequestById(reqId, requestRepository);
         if (!event.getInitiator().equals(user)) {
             String message = "Подтверждать заявки на участие в событии может только его инициатор.";
             log.warn(message);
             throw new BadRequestException(message);
         }
-        Request request = requestRepository.getReferenceById(reqId);
         if (event.getRequestModeration().equals(false)) {
             return confirmRequest(request, eventId);
         }
@@ -146,13 +144,12 @@ public class RequestService {
     public RequestDto rejectRequestByEventInitiator(Long userId, Long eventId, Long reqId) {
         User user = BeanFinder.findUserById(userId, userRepository);
         Event event = BeanFinder.findEventById(eventId, eventRepository);
-        BeanFinder.findRequestById(reqId, requestRepository);
+        Request request = BeanFinder.findRequestById(reqId, requestRepository);
         if (!event.getInitiator().equals(user)) {
             String message = "Отклонять заявки на участие в событии может только его инициатор.";
             log.warn(message);
             throw new BadRequestException(message);
         }
-        Request request = requestRepository.getReferenceById(reqId);
         if (request.getStatus().equals(RequestStatus.REJECTED) ||
                 request.getStatus().equals(RequestStatus.CANCELED)) {
             String message = "Заявка на участие в событии уже отклонена.";

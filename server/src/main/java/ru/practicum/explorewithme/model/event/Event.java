@@ -1,17 +1,17 @@
 package ru.practicum.explorewithme.model.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.explorewithme.model.category.EventCategory;
 import ru.practicum.explorewithme.model.location.Location;
 import ru.practicum.explorewithme.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,4 +53,26 @@ public class Event {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "state", nullable = false)
     private EventState state;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Event)) return false;
+        Event event = (Event) o;
+        return isPaid() == event.isPaid() && getParticipantLimit() == event.getParticipantLimit()
+                && getId().equals(event.getId()) && getTitle().equals(event.getTitle())
+                && getAnnotation().equals(event.getAnnotation()) && getDescription().equals(event.getDescription())
+                && getCategory().equals(event.getCategory()) && getInitiator().equals(event.getInitiator())
+                && getEventDate().equals(event.getEventDate()) && getLocation().equals(event.getLocation())
+                && getRequestModeration().equals(event.getRequestModeration())
+                && getPublishedOn().equals(event.getPublishedOn()) && getCreated().equals(event.getCreated())
+                && getState() == event.getState();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTitle(), getAnnotation(), getDescription(), getCategory(), getInitiator(),
+                getEventDate(), getLocation(), isPaid(), getParticipantLimit(), getRequestModeration(),
+                getPublishedOn(), getCreated(), getState());
+    }
 }

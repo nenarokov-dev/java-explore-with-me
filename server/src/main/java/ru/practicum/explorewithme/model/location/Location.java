@@ -1,13 +1,13 @@
 package ru.practicum.explorewithme.model.location;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +22,18 @@ public class Location {
     private Float lat;
     @Column(name = "lon", nullable = false)
     private Float lon;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Location)) return false;
+        Location location = (Location) o;
+        return getId().equals(location.getId()) && getLat().equals(location.getLat())
+                && getLon().equals(location.getLon());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getLat(), getLon());
+    }
 }

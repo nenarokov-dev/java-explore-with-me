@@ -35,15 +35,16 @@ public class EventCategoryService {
             log.warn(message);
             throw new BadRequestException(message);
         }
-        EventCategory category = categoriesRepository.getReferenceById(id);
+        EventCategory category = BeanFinder.findEventCategoryById(id, categoriesRepository);
         if (categoriesRepository.findByName(eventCategory.getName()) != null) {
             String message = "Нарушение уникальности категории события.";
             log.warn(message);
             throw new DuplicateException(message);
         }
         category.setName(eventCategory.getName());
-        log.info("Категория событий id={} успешно обновлена.", category.getId());
-        return CategoriesMapper.toCategoryDto(category);
+        EventCategory updatedCategory = categoriesRepository.save(category);
+        log.info("Категория событий id={} успешно обновлена.", updatedCategory.getId());
+        return CategoriesMapper.toCategoryDto(updatedCategory);
     }
 
     public List<EventCategory> getAll(Integer from, Integer size) {
@@ -53,8 +54,7 @@ public class EventCategoryService {
     }
 
     public EventCategory getById(Long id) {
-        BeanFinder.findEventCategoryById(id, categoriesRepository);
-        EventCategory category = categoriesRepository.getReferenceById(id);
+        EventCategory category = BeanFinder.findEventCategoryById(id, categoriesRepository);
         log.info("Категорий событий id={} успешно получена.", id);
         return category;
     }
