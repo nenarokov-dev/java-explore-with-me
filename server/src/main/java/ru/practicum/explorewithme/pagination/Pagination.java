@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 @Service
 public class Pagination<T> {
 
-    public List<T> setPagination(Integer from, Integer size, List<T> collection) {
-        if (size != null && size <= 0) {
+    public List<T> setPagination(Integer from, Integer size, List<T> collection) {//<- кастомная постраничная разбивка. Поработав на большом проекте понимаю, что это плохая практика, т.к. при большом объёме данных будет 
+        if (size != null && size <= 0) {                                          // получен StqckOverflow exception
             String message = "Размер страницы должен быть больше нуля.";
             log.error(message);
             throw new BadRequestException(message);
